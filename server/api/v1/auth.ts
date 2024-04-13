@@ -19,7 +19,7 @@ router.get('/self', async (req, res) => {
 	if(!auth) return res.status(200).json({user: null});
 	try {
 		const user = await User.findById(auth);
-		return res.status(200).json({user});
+		return res.status(200).json(user ? {user:{displayName: user.displayName}}:{user:null});
 	} catch (error) {
 		return res.status(500).json({message: (error as Error).message});
 	}

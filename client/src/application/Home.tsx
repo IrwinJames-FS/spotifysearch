@@ -1,7 +1,10 @@
 import { useApplication } from "./Application"
+import { Topbar } from "./components/Topbar";
 
 export const Home = () => {
 	const {user} = useApplication();
 
-	return (<h1>Home {user ? 'got user':'no user'}</h1>)
+	return (<>
+	<Topbar/>
+	</>)
 }
