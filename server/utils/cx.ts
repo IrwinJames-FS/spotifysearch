@@ -14,3 +14,5 @@ export const magenta = (strings:TemplateStringsArray, ...args: any[]): string =>
 export const cyan = (strings:TemplateStringsArray, ...args: any[]): string => `\x1b[36m${zst(strings, args)}\x1b[0m`;
 
 export const greenlg = (strings: TemplateStringsArray, ...args: any[]) => console.log(green(strings, ...args));
+
+export const b64 = (strings: TemplateStringsArray, ...args: any[]) => btoa(zst(strings, args))
