@@ -1,17 +1,23 @@
 {
   "dependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
+    "express-session": "^1.18.0",
+    "passport-cookie": "^1.0.9"
   },
   "name": "spotifysearch",
   "description": "Spotify Search is just a simple method application to allow for searching spotify.",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "dev": "concurrently \"npm run watch --prefix ./server\" \"npm start --prefix ./client\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express-session": "^1.18.0"
+  }
 }

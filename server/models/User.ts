@@ -5,6 +5,10 @@ const schema = new Schema<UserDocument, UserModel>({
 		type: String,
 		required: [true, 'An ID must be provided']
 	},
+	displayName: {
+		type: String,
+		required: [true, 'A display name should always be provided']
+	},
 	accessToken: {
 		type: String,
 		required: [true, 'An access token was not provided'],
@@ -16,11 +20,12 @@ const schema = new Schema<UserDocument, UserModel>({
 	expires: {
 		type: Number,
 		required: [true, 'An expiration value must be provided']
-	}
+	},
 })
 
 export interface UserDocument extends Document {
 	_id: string,
+	displayName: string,
 	accessToken: string,
 	refreshToken: string,
 	expires: number,
