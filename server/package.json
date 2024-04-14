@@ -19,7 +19,8 @@
     "passport": "^0.7.0",
     "passport-spotify": "^2.0.0",
     "qs": "^6.12.1",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.7",
