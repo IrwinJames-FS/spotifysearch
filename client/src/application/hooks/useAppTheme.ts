@@ -1,8 +1,45 @@
-import { createTheme, useMediaQuery } from "@mui/material"
+import { createTheme, useMediaQuery, Color } from "@mui/material"
 import { useMemo } from "react";
 
+declare module '@mui/material' {
+	interface Palette {
+		overlays: Color
+	}
+
+	interface PaletteOptions {
+		overlays: Color
+	}
+
+	interface Theme {
+		constants: {
+			gridCellWidth: number
+			gridCellHeight: number
+		}
+	}
+
+	interface ThemeOptions {
+		constants: {
+			gridCellWidth: number
+			gridCellHeight: number
+		}
+	}
+}
 const white = '#FFF';
 const black = '#000';
+let colorKeys: (keyof Color)[] = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 'A100', 'A200', 'A400', 'A700'];
+
+const genColor = (clrs: string[]): Color => {
+	return colorKeys.reduce((o,k,i)=>({...o, [k]:clrs[i]}), {}) as Color
+}
+const genOpaque = (clr: string): Color => {
+	clr = clr.replace('#', '');
+	clr = clr.length === 3 ? `${clr.charAt(0)}${clr.charAt(0)}${clr.charAt(1)}${clr.charAt(1)}${clr.charAt(2)}${clr.charAt(2)}`:clr
+	const step = 256/14
+	
+	return genColor(new Array(14).fill('').map((_, i)=>crx(clr, Math.floor(step*i))));
+}
+let crx = (clr: string, v: number) => `#${clr}${hx(v)}`
+let hx = (v: number) => v.toString(16).padStart(2, '0');
 
 export const useAppTheme = () => {
 	const isDark = useMediaQuery('(prefers-color-scheme: dark)');
@@ -16,7 +53,8 @@ export const useAppTheme = () => {
 			background: {
 				default: '#333',
 				paper: '#444'
-			}
+			},
+			overlays: genOpaque('#555')
 		}:{
 			mode: 'light',
 			primary: {
@@ -25,7 +63,12 @@ export const useAppTheme = () => {
 			},
 			background: {
 				default: '#AAFFAA'
-			}
+			},
+			overlays: genOpaque('#FFF')
+		},
+		constants: {
+			gridCellWidth: 256,
+			gridCellHeight: 256
 		},
 		components: {
 			MuiTextField: {
