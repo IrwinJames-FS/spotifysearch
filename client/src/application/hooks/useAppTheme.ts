@@ -3,13 +3,11 @@ import { useMemo } from "react";
 
 const white = '#FFF';
 const black = '#000';
-const red = '#F00';
-const green = '#0F0';
-const blue = '#00F';
+
 export const useAppTheme = () => {
 	const isDark = useMediaQuery('(prefers-color-scheme: dark)');
-	return useMemo(()=>createTheme(isDark ? {
-		palette: {
+	return useMemo(()=>createTheme({
+		palette: isDark ? {
 			mode: 'dark',
 			primary: {
 				main: '#86FDA0',
@@ -19,13 +17,25 @@ export const useAppTheme = () => {
 				default: '#333',
 				paper: '#444'
 			}
-		}
-	}:{
-		palette: {
+		}:{
 			mode: 'light',
 			primary: {
 				main: '#20C360',
 				contrastText: white
+			},
+			background: {
+				default: '#AAFFAA'
+			}
+		},
+		components: {
+			MuiTextField: {
+				styleOverrides: {
+					root: {
+						backgroundColor: isDark ? 'rgba(0,0,0,0.5)':'rgba(255,255,255,0.5)',
+						borderRadius: '3rem',
+						outline: 'none',
+					}
+				}
 			}
 		}
 	}), [isDark]);

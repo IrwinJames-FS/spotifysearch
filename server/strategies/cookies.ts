@@ -7,7 +7,7 @@ passport.use(new Strategy({
 }, async (token:string, done: DoneCallback) => {
 	console.log(token);
 	try {
-		const user = User.findById(token);
+		const user = await User.findById(token);
 		return done(null, user);
 	} catch (error) {
 		return done(error);

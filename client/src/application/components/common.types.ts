@@ -3,3 +3,146 @@ import { ReactNode } from "react"
 export type ParentElement = {
 	children?: ReactNode
 }
+
+export type SearchResult = {
+	albums: SearchResultGroup<AlbumResult>
+	artists: SearchResultGroup<ArtistResult>
+	audiobooks: SearchResultGroup<AudioBookResult>
+	episodes: SearchResultGroup<EpisodeResult>
+	playlists: SearchResultGroup<PlaylistResult>
+	shows: SearchResultGroup<ShowResult>
+	tracks: SearchResultGroup<TrackResult>
+}
+
+export type SearchResultGroup<T extends ResultItem> = {
+	href: string,
+	items: T[]
+	limit: number
+	next?: string
+	offset: 0
+	previous?: string
+	total: number
+}
+
+export type ResultItem = {
+	external_urls: ExternalUrls
+	href: string
+	id: string
+	name: string
+	type: string
+	uri: string
+	images?: ImageResult[]
+}
+export type AlbumResult = ResultItem & {
+	type: 'album'
+	album_type: string
+	available_markets: string[]
+	release_date: string
+	total_tracks: number
+}
+
+export type ArtistResult =ResultItem & {
+	followers: FollowerResult
+	genres: string[]
+	popularity: number
+	type: 'artist'
+}
+
+export type AudioBookResult = ResultItem & {
+	authors: AuthorResult[]
+	available_markets: string[]
+	copyrights: string[]
+	description: string
+	edition: string
+	explicit: boolean
+	html_description: string
+	is_externally_hosted: boolean
+	languages: string[]
+	media_type: string
+	narrators: AuthorResult[]
+	publisher: string
+	total_chapters: number
+	type: 'audiobook'
+}
+
+export type EpisodeResult = ResultItem & {
+	audio_preview_url: string
+	description: string
+	duration_ms: number
+	explicit: boolean
+	html_description: string
+	is_externally_hosted: boolean
+	is_playable: boolean
+	language: string
+	languages: string[]
+	release_date: string
+}
+
+export type PlaylistResult = ResultItem & {
+	collaborative: boolean
+	description: string
+	owner: OwnerResult
+	primary_color?: string
+	public?: string
+	snapshot_id: string
+	tracks: FollowerResult
+	type: 'playlist'
+}
+
+export type ShowResult = ResultItem & {
+	available_markets: string[]
+	copyrights: string[]
+	description: string
+	explicit: boolean
+	html_description: string
+	is_externally_hosted: boolean
+	languages: string[]
+	media_type: string
+	publisher: string
+	total_episodes: number
+	type: 'show'
+}
+
+export type TrackResult = ResultItem & {
+	album: AlbumResult
+	artists: ArtistResult
+	available_markets: string[]
+	disc_number: number
+	duration_ms: number
+	explicit: boolean
+	external_ids: ExternalIds
+	is_local: boolean
+	popularity: number
+	preview_url: string
+	track_number: number
+	type: 'track'
+}
+
+export type ExternalIds = {
+	isrc: string
+}
+
+export type OwnerResult = {
+	display_name: string
+	external_urls: ExternalUrls
+	href: string
+	id: string
+	type: string
+	uri: string
+}
+export type ExternalUrls = Record<string, string>
+
+export type FollowerResult = {
+	href?: string
+	total: number
+}
+
+export type ImageResult = {
+	height: number
+	width: number
+	url: string
+}
+
+export type AuthorResult = {
+	name: string
+}
