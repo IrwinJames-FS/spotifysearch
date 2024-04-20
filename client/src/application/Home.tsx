@@ -1,23 +1,27 @@
-import { Error, Forward, Search } from "@mui/icons-material";
-import { Toolbar, TextField, InputAdornment, IconButton, Typography, Button, CircularProgress, Card, CardContent, Stack } from "@mui/material";
-import { useApplication } from "./Application"
+import { Error } from "@mui/icons-material";
+import { Toolbar, Typography, Button, CircularProgress, Card, CardContent, Stack } from "@mui/material";
+import { useApplication } from "./Application";
 import { SearchField, Topbar } from "./components";
-import { useInputValue } from "./hooks/useInputValue";
-import { KeyboardEventHandler, useCallback, useMemo, useState } from "react";
-import { useBool } from "./hooks/useBool";
+import { useCallback, useMemo } from "react";
 import { useAsync } from "./hooks";
-import { SearchResult, SearchResultGroup, ResultItem } from "./components/common.types";
+import { SearchResult } from "./components/common.types";
 import { search } from "./utils/api";
 import { Flex } from "./components/Flex";
 import { HorizontalList } from "./components/SearchResults";
+import { useLocation, useNavigate } from "react-router-dom";
+import qs from 'qs';
 
-
+const useQuery = (key: string) => {
+	const { search } = useLocation()
+	return useMemo(()=>new URLSearchParams(search).get(key) ?? "", [search]);
+}
 export const Home = () => {
 	const {user} = useApplication();
-	const [query, setQuery] = useState("");
+	const navigate = useNavigate();
+	let query = useQuery("q")
 	const onSearch = useCallback((value: string)=>{
-		setQuery(value);
-	}, [])
+		navigate(`/?${qs.stringify({q: value})}`)
+	}, [navigate])
 	const [loading, error, results] = useAsync<SearchResult | undefined>(useCallback(async ()=>{
 		const q = query.trim();
 		if(!q) return undefined;
