@@ -1,2 +1,2 @@
-export * from './ResultsGrid';
+export * from './SearchField';
 export * from './Topbar';

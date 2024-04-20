@@ -9,7 +9,7 @@ router.get('/', passport.authenticate('spotify'));
 router.get('/callback', passport.authenticate('spotify', {failureRedirect: 'http//localhost:3001/api/v1/auth', session: false}), (req: Request, res: Response)=> {
 	const user = req.user! as UserDocument
 	res.cookie('auth', user._id, {expires: new Date(user.expires), httpOnly: true, domain: 'localhost', path: '/'})
-	res.redirect(302, 'http://localhost:3000');
+	res.redirect(302, 'http://localhost:3001');
 });
 /**
  * This will be a method to check if the user exists it will always return 200 however will only populate a user if the auth cookie is set.

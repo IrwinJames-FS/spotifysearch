@@ -14,6 +14,10 @@ declare module '@mui/material' {
 		constants: {
 			gridCellWidth: number
 			gridCellHeight: number
+			gridCaptionHeight: number
+			horizontalLoadOffset: number
+			horizontalVirtualizeBuffer: number
+			debounceMs: number
 		}
 	}
 
@@ -21,6 +25,10 @@ declare module '@mui/material' {
 		constants: {
 			gridCellWidth: number
 			gridCellHeight: number
+			gridCaptionHeight: number
+			horizontalLoadOffset: number
+			horizontalVirtualizeBuffer: number 
+			debounceMs: number
 		}
 	}
 }
@@ -68,7 +76,11 @@ export const useAppTheme = () => {
 		},
 		constants: {
 			gridCellWidth: 256,
-			gridCellHeight: 256
+			gridCellHeight: 256,
+			gridCaptionHeight: 48,
+			horizontalLoadOffset: 900,
+			horizontalVirtualizeBuffer: 4,
+			debounceMs: 1e3
 		},
 		components: {
 			MuiTextField: {
