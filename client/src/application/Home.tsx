@@ -13,8 +13,9 @@ import qs from 'qs';
 
 const useQuery = (key: string) => {
 	const { search } = useLocation()
-	return useMemo(()=>new URLSearchParams(search).get(key) ?? "", [search]);
+	return useMemo(()=>new URLSearchParams(search).get(key) ?? "", [search, key]);
 }
+
 export const Home = () => {
 	const {user} = useApplication();
 	const navigate = useNavigate();
@@ -23,6 +24,7 @@ export const Home = () => {
 		navigate(`/?${qs.stringify({q: value})}`)
 	}, [navigate])
 	const [loading, error, results] = useAsync<SearchResult | undefined>(useCallback(async ()=>{
+		if(!user) return undefined;
 		const q = query.trim();
 		if(!q) return undefined;
 		return await search(q);
