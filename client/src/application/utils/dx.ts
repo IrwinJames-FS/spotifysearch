@@ -4,7 +4,7 @@ export const dx = (n: number) => {
 	const h = Math.floor(n/36e5);
 	let tm = [];
 	if(h) tm.push(px(h));
-	if(m || h) tm.push(px(m));
+	tm.push(px(m));
 	tm.push(px(s));
 	return tm.join(':')
 }

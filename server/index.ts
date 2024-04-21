@@ -17,6 +17,7 @@ const db = mongoose.connection;
 db.on('error', (error: unknown) =>redlg`[MONGO] Database Error: ${(error as Error).message}`); //Should probably be outputting to a log... heroku does this for you.
 db.once('open', () => greenlg`[MONGO] Connection successfull`)
 app.use(cookieParser());
+app.use(express.json());
 app.use('/api', api);
 app.use('/', NODE_ENV === "development" ? proxy("http://localhost:3000"):express.static('../client/build'));
 

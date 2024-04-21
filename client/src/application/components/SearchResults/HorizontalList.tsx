@@ -6,12 +6,14 @@ import { ResultCell } from "./ResultCell";
 import { useResultGroup } from "../../hooks/useResultGroup";
 import { CardActionArea } from "./common";
 import { Refresh } from "@mui/icons-material";
+import { play } from "../../utils/api";
+import { usePlayer } from "../Player";
 
 export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultItem>}> = ({title, group}) => {
 	const [loading, error, grp, next] = useResultGroup(group);
 	const theme = useTheme();
 	const ref = useRef<HTMLDivElement | null>(null);
-	const timeout = useRef<NodeJS.Timeout | null>(null)
+	const { device_id, setToast } = usePlayer();
 	const [width, setWidth] = useState(0);
 	const cellWidth = useMemo(()=>theme.constants.gridCellWidth+8, [theme.constants.gridCellWidth]);
 	const bf = useMemo(()=>theme.constants.horizontalVirtualizeBuffer, [theme.constants.horizontalLoadOffset]);
@@ -40,6 +42,18 @@ export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultI
 		setWidth(ref.current.clientWidth);
 	}, [setWidth]);
 
+	const onItemClick = useCallback((item: ResultItem) => {
+		if(!device_id) {
+			console.log("No device id");
+			setToast({open: true, autoHideDuration: 3e3, title: "The player is not currently available", severity: "error"})
+			return;
+		}
+		console.log(item.uri);
+		play(item.uri, device_id!)
+	}, [device_id]);
+	const nonPlayableClick = useCallback((item: ResultItem) => {
+		console.log(item);
+	}, []);
 	useEffect(()=>{
 		if(!ref.current) return;
 		onResize();
@@ -50,6 +64,9 @@ export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultI
 	useEffect(()=>{
 		updatePointers();
 	}, [width, updatePointers]);
+	const data = useMemo(()=>{
+		return [... new Array(start).fill(undefined), ...grp.items.slice(start, end), ...new Array(grp.items.length > end ? grp.items.length-end:0).fill(undefined)]
+	}, [grp, start, end])
 	return (<Box>
 	<Card sx={{mb:1}}>
 		<Toolbar>
@@ -57,7 +74,7 @@ export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultI
 		</Toolbar>
 	</Card>
 	<Stack direction="row" gap={1} overflow="scroll" onScroll={onScroll} ref={ref}>
-		{[...new Array(start).fill(undefined), ...grp.items.slice(start, end), ...new Array(grp.items.length-end).fill(undefined)].map((item, i)=><ResultCell item={item} key={i}/>)}
+		{data.map((item, i)=><ResultCell item={item} key={i} onPlay={onItemClick} onClick={nonPlayableClick}/>)}
 		{error && <Card>
 			<CardActionArea>
 				<Flex fill center>

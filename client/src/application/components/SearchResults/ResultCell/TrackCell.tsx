@@ -3,10 +3,10 @@ import { CaptionArea, CaptionComponent, Card, CardActionArea, Img, NameComponent
 import { TrackResult } from "../../common.types";
 import { useImage } from "../../../hooks/useImage";
 
-export const TrackCell: FC<{item: TrackResult}> = ({item}) => {
+export const TrackCell: FC<{item: TrackResult, onClick:(item:TrackResult)=>void}> = ({item, onClick}) => {
 	const img = useImage(item.album.images);
 	return (<Card>
-		<CardActionArea title={item.name}>
+		<CardActionArea title={item.name} onClick={()=>onClick(item)}>
 			{img && <Img {...{src: img.src, alt: item.name}}/>}
 			<CaptionArea justifyContent="center">
 				<NameComponent name={item.name}/>

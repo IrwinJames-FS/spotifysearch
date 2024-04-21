@@ -16,15 +16,15 @@ import { Flex } from "../../Flex"
  * @param param0 
  * @returns 
  */
-export const ResultCell: FC<{item?: ResultItem}> = ({item}) => {
+export const ResultCell: FC<{item?: ResultItem, onPlay:(item: ResultItem)=>void, onClick: (item: ResultItem)=>void}> = ({item, onClick, onPlay}) => {
 	switch (item?.type) {
-		case 'album': return (<AlbumCell item={item as AlbumResult}/>);
-		case 'artist': return (<ArtistCell item={item as ArtistResult}/>);
+		case 'album': return (<AlbumCell item={item as AlbumResult} onClick={onPlay}/>);
+		case 'artist': return (<ArtistCell item={item as ArtistResult} onClick={onPlay}/>);
 		case 'audiobook': return (<AudiobookCell item={item as AudioBookResult}/>);
 		case 'episode': return (<EpisodeCell item={item as EpisodeResult}/>);
-		case 'playlist': return (<PlaylistCell item={item as PlaylistResult}/>);
+		case 'playlist': return (<PlaylistCell item={item as PlaylistResult} onClick={onPlay}/>);
 		case 'show': return (<ShowCell item={item as ShowResult}/>);
-		case 'track': return (<TrackCell item={item as TrackResult}/>);
+		case 'track': return (<TrackCell item={item as TrackResult} onClick={onClick}/>);
 		default: return (<Card>
 			<CardContent>
 				<Flex fill center>
