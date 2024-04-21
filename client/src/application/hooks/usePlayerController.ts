@@ -17,7 +17,6 @@ export type PlayerErrorType = PlayerAccountError | PlayerAuthError | PlayerInitE
 export type ErrConstructor<T> = new (message?: string) => T
 
 const convertState = ({paused, duration, position, timestamp, ...state}: Spotify.PlaybackState) : PlayerState => {
-	console.log(state);
 	const images = state.track_window.current_track.album.images ?? []
 	const img = images.length ? (images.find(i=>i.size==='SMALL') ?? images[0]):undefined;
 	const track_name = state.track_window.current_track.name;

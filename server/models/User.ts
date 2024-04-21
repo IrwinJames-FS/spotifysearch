@@ -22,14 +22,16 @@ const schema = new Schema<UserDocument, UserModel>({
 		required: [true, 'An expiration value must be provided']
 	},
 })
-
-export interface UserDocument extends Document {
+export interface IUser  {
 	_id: string,
 	displayName: string,
 	accessToken: string,
 	refreshToken: string,
 	expires: number,
 }
+interface UserBaseDocument extends IUser, Document {}
+
+export interface UserDocument extends UserBaseDocument {};
 
 export interface UserModel extends Model<UserDocument> {};
 

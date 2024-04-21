@@ -20,4 +20,6 @@ export const play = (uri: string, device_id: string) => axios.put(`${BASE_URL}pl
 
 export const transfer = (device_id: string) => axios.put(`${BASE_URL}player/transfer`, {
 	device_id
-}, {withCredentials: true})
+}, {withCredentials: true});
+
+export const refresh = () => axios.get(`${BASE_URL}auth/refresh`, {withCredentials: true}).then(r=>r.data);

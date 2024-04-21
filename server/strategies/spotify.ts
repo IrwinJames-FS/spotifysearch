@@ -16,3 +16,4 @@ passport.use(new Strategy({
 		return done(error as Error)
 	}
 }));
+
