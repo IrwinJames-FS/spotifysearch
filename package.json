@@ -11,7 +11,7 @@
   "main": "index.js",
   "scripts": {
     "setup": "concurrently \"npm install --prefix ./server\" \"npm install --prefix ./client\"",
-    "dev": "concurrently \"npm run watch --prefix ./server\" \"npm start --prefix ./client\"",
+    "dev": "concurrently \"npm run watch --prefix ./server\" \"BROWSER=none npm start --prefix ./client\" \"open http://localhost:3001\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

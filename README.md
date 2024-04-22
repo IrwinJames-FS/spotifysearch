@@ -20,8 +20,17 @@ CLIENT_ID=<spotify app id>
 CLIENT_SECRET=<spotify app secret>
 MONGO="mongodb://localhost:27017/spotifysearch"
 ```
+5. Run Dev from root of the project
+```
+npm run dev
+```
+
+## Important
+**DO NOT USE http://localhost3000** The ui will load but authentication will not work. instead open http://localhost:3001 (A browser window should be opened automatically to this address)
 
 ## Known Issues. 
 There appears to be an issue with the cookie being set properly the first login attempt. I am looking into this however clicking sign in again appears to set the credential properly. 
+
+The occurance of this has been rectified partially I do notice occasionally I need to sign in twice. Spotify accepts repeated login attempts as a way to clear their session cache. Now however I no longer need to grant permissions again I am just logged straight in. 
 
 
