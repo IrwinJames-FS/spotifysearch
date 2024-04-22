@@ -9,9 +9,10 @@ import { Add } from "@mui/icons-material";
 import { DetailsList, Image, T, Title } from "./common.ui";
 import { dx } from "../../utils/dx";
 import { FaSpotify } from "react-icons/fa";
+import { TrackTable } from "./TrackTable";
 
 
-export const TrackDetail: FC<TrackItem> = ({device_id, name, duration_ms, album, artists, track_number, external_urls, uri}) => {
+export const TrackDetail: FC<TrackItem> = ({device_id, name, duration_ms, album, artists, track_number, external_urls, uri, ...rest}) => {
 	const [isLoadingAlbumnInfo,, albumInfo] = useAsync<HydradedAlbumResult>(useCallback(async () => {
 		const a =  await getItem('album', album.id);
 		console.log(a);
@@ -21,7 +22,7 @@ export const TrackDetail: FC<TrackItem> = ({device_id, name, duration_ms, album,
 	const addTrackToQueue = useCallback(()=>{
 		addToQueue(uri, device_id);
 	}, [uri, device_id]);
-	
+	console.log(rest);
 	return (<>
 	<Title>
 		<Image {...{images: album.images, size: 'lg'}}/>
@@ -43,25 +44,7 @@ export const TrackDetail: FC<TrackItem> = ({device_id, name, duration_ms, album,
 				<Button variant="contained" component={"a"} href={external_urls.spotify} target="_blank" color="primary" startIcon={<FaSpotify/>}>Open in Spotify</Button>
 			</Stack>}
 		</Stack>
-		{isLoadingAlbumnInfo ? <CircularProgress/>:
-			<TableContainer>
-				<Table>
-					<TableHead>
-						<TableRow sx={{bgcolor:'overlays.900'}}>
-							<TableCell sx={{whiteSpace:'nowrap'}}>Track</TableCell>
-							<TableCell>Track Name</TableCell>
-							<TableCell>Duration</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{albumInfo?.tracks.items.map((track, i)=><TableRow key={i} sx={{bgcolor: i+1 === track_number ? 'overlays.300':i%2 === 0 ? 'overlays.600':'overlays.900'}}>
-							<TableCell>{track.track_number}</TableCell>
-							<TableCell>{track.name}</TableCell>
-							<TableCell>{track.duration_ms}</TableCell>
-						</TableRow>)}
-					</TableBody>
-				</Table>
-			</TableContainer>}
+		{isLoadingAlbumnInfo ? <CircularProgress/>:<TrackTable tracks={albumInfo!.tracks.items}/>}
 	</DialogContent>
 	</>)
 }

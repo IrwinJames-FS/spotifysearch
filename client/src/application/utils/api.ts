@@ -31,5 +31,5 @@ export const refresh = () => axios.get(`${BASE_URL}/auth/refresh`, {withCredenti
 
 export const getItem = (type: string, id: string) => axios.get(bl`/spot/${type}s/${id}`, {withCredentials:true}).then(r=>r.data);
 
-export const addToQueue = (uri: string, device_id: string) => axios.post(bl`/spot/me/player/queue`, {uri, device_id}, {withCredentials:true}).then(r=>r.data);
+export const addToQueue = (uri: string, device_id: string) => axios.post(bl`/spot/me/player/queue?${qs.stringify({uri, device_id})}`, {} , {withCredentials:true}).then(r=>r.data);
 

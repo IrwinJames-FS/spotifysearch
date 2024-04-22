@@ -2,7 +2,6 @@ import { FC } from "react";
 import { EpisodeItem } from "./types";
 import { DetailsList, Image, T, Title } from "./common.ui";
 import { dx } from "../../utils/dx";
-import { EpisodeTable } from "./EpisodeTable";
 
 export const EpisodeDetails: FC<EpisodeItem> = ({name, description, duration_ms, images}) => {
 	return (<>
@@ -14,6 +13,5 @@ export const EpisodeDetails: FC<EpisodeItem> = ({name, description, duration_ms,
 			<T>{dx(duration_ms*10)}</T>
 		</DetailsList>
 	</Title>
-	<EpisodeTable tracks={[]}/>
 	</>)
 }

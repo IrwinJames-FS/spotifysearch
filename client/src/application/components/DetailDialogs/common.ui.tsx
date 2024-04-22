@@ -1,4 +1,4 @@
-import { DialogTitle, DialogTitleProps, Stack, StyledComponentProps, Typography, TypographyProps } from "@mui/material";
+import { DialogTitle, DialogTitleProps, Stack, StyledComponentProps, Theme, Typography, TypographyProps } from "@mui/material";
 import { FC, useMemo } from "react";
 import { ParentElement, TrackResult } from "../common.types";
 import { Img } from "../ImageSlider";
@@ -17,7 +17,7 @@ export const DetailsList: FC<ParentElement> = ({children}) => {
 	</Stack>)
 }
 
-export const Image: FC<{images: Spotify.Image[] | undefined, size?: "sm" | "md" | "lg" | number, alt?: string} & StyledComponentProps<"img">> = ({images, alt, size, ...props}) => {
-	const image = useImages(images, alt, size, props)
-	return image ? (<Img {...image} sx={{width: 256, height:256}}/>):null;
+export const Image: FC<{images: Spotify.Image[] | undefined, size?: "sm" | "md" | "lg" | number, alt?: string, sx?:Record<string, any>} & StyledComponentProps<"img">> = ({images, alt, size, sx, ...props}) => {
+	const image = useImages(images, alt, size)
+	return image ? (<Img {...props} {...image} sx={sx ?? {width: 256, height:256}} />):null;
 }

@@ -81,7 +81,7 @@ export type EpisodeResult = ResultItem & {
 	is_playable: boolean
 	language: string
 	languages: string[]
-	release_date: string
+	release_date: string,
 }
 
 export type PlaylistResult = ResultItem & {
@@ -106,6 +106,7 @@ export type ShowResult = ResultItem & {
 	media_type: string
 	publisher: string
 	total_episodes: number
+	episodes: SearchResultGroup<EpisodeResult>
 	type: 'show'
 }
 export type TrackResultLite = ResultItem & {

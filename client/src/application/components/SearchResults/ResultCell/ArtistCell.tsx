@@ -2,6 +2,7 @@ import { FC } from "react";
 import { CaptionArea, CaptionComponent, Card, CardActionArea, Img, NameComponent, NameLabel } from "../common";
 import { ArtistResult } from "../../common.types";
 import { useImage } from "../../../hooks/useImage";
+import { commafy } from "../../../utils/strings";
 
 export const ArtistCell: FC<{item: ArtistResult, onClick: (item: ArtistResult)=>void}> = ({item, onClick}) => {
 	const img = useImage(item.images);
@@ -10,7 +11,7 @@ export const ArtistCell: FC<{item: ArtistResult, onClick: (item: ArtistResult)=>
 			{img && <Img {...{src: img.src, alt: item.name}}/>}
 			<CaptionArea justifyContent="center">
 				<NameComponent name={item.name}/>
-				<CaptionComponent title="Popularity" value={item.popularity}/>
+				<CaptionComponent title="Popularity" value={commafy(`${item.popularity}`)}/>
 			</CaptionArea>
 		</CardActionArea>
 	</Card>)

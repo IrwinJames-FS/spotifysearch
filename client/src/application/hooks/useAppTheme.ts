@@ -91,6 +91,20 @@ export const useAppTheme = () => {
 						outline: 'none',
 					}
 				}
+			},
+			MuiTableCell: {
+				styleOverrides: {
+					root: {
+						padding: 0
+					}
+				}
+			},
+			MuiDialog: {
+				styleOverrides: {
+					paper: {
+						maxWidth: 1200
+					}
+				}
 			}
 		}
 	}), [isDark]);

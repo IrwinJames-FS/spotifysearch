@@ -27,7 +27,7 @@ router.post('/*', async (req, res, next) => {
 	console.log(body);
 	if(!ex) return next(new ApiError('Invalid params provided', 422));
 	try {
-		const data = await ax.get('/'+ex, (req.user! as UserDocument).accessToken, query)
+		const data = await ax.post('/'+ex, (req.user! as UserDocument).accessToken, query, body)
 		return res.status(200).json(data);
 	} catch (error) {
 		const e = error as AxiosError
