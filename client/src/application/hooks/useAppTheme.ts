@@ -1,4 +1,4 @@
-import { createTheme, useMediaQuery, Color } from "@mui/material"
+import { createTheme, useMediaQuery, Color, Theme } from "@mui/material"
 import { useMemo } from "react";
 
 declare module '@mui/material' {

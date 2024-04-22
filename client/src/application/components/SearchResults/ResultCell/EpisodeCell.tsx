@@ -4,10 +4,10 @@ import { EpisodeResult } from "../../common.types";
 import { useImage } from "../../../hooks/useImage";
 import { dx } from "../../../utils/dx";
 
-export const EpisodeCell: FC<{item: EpisodeResult}> = ({item}) => {
+export const EpisodeCell: FC<{item: EpisodeResult, onClick: (item: EpisodeResult)=>void}> = ({item, onClick}) => {
 	const img = useImage(item.images);
 	return (<Card>
-		<CardActionArea title={item.name}>
+		<CardActionArea title={item.name} onClick={()=>onClick(item)}>
 			{img && <Img {...{src: img.src, alt: item.name}}/>}
 			<CaptionArea justifyContent="center">
 				<NameComponent name={item.name}/>

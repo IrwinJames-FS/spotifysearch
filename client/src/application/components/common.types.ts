@@ -14,7 +14,7 @@ export type SearchResult = {
 	tracks: SearchResultGroup<TrackResult>
 }
 
-export type SearchResultGroup<T extends ResultItem> = {
+export type SearchResultGroup<T> = {
 	href: string,
 	items: T[]
 	limit: number
@@ -40,6 +40,12 @@ export type AlbumResult = ResultItem & {
 	release_date: string
 	total_tracks: number
 }
+
+export type HydradedAlbumResult = AlbumResult & {
+	tracks: SearchResultGroup<TrackResultLite>
+}
+
+
 
 export type ArtistResult =ResultItem & {
 	followers: FollowerResult
@@ -102,20 +108,21 @@ export type ShowResult = ResultItem & {
 	total_episodes: number
 	type: 'show'
 }
-
-export type TrackResult = ResultItem & {
-	album: AlbumResult
-	artists: ArtistResult
+export type TrackResultLite = ResultItem & {
 	available_markets: string[]
+	artists: ArtistResult[]
 	disc_number: number
 	duration_ms: number
 	explicit: boolean
-	external_ids: ExternalIds
 	is_local: boolean
-	popularity: number
 	preview_url: string
-	track_number: number
+	track_number:number
 	type: 'track'
+}
+export type TrackResult = TrackResultLite & {
+	album: AlbumResult
+	external_ids: ExternalIds
+	popularity: number
 }
 
 export type ExternalIds = {

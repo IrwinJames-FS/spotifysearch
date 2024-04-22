@@ -16,13 +16,13 @@ import { Flex } from "../../Flex"
  * @param param0 
  * @returns 
  */
-export const ResultCell: FC<{item?: ResultItem, onPlay:(item: ResultItem)=>void, onClick: (item: ResultItem)=>void}> = ({item, onClick, onPlay}) => {
+export const ResultCell: FC<{item?: ResultItem, onClick: (item: ResultItem)=>void}> = ({item, onClick}) => {
 	switch (item?.type) {
-		case 'album': return (<AlbumCell item={item as AlbumResult} onClick={onPlay}/>);
-		case 'artist': return (<ArtistCell item={item as ArtistResult} onClick={onPlay}/>);
+		case 'album': return (<AlbumCell item={item as AlbumResult} onClick={onClick}/>);
+		case 'artist': return (<ArtistCell item={item as ArtistResult} onClick={onClick}/>);
 		case 'audiobook': return (<AudiobookCell item={item as AudioBookResult}/>);
-		case 'episode': return (<EpisodeCell item={item as EpisodeResult}/>);
-		case 'playlist': return (<PlaylistCell item={item as PlaylistResult} onClick={onPlay}/>);
+		case 'episode': return (<EpisodeCell item={item as EpisodeResult} onClick={onClick}/>);
+		case 'playlist': return (<PlaylistCell item={item as PlaylistResult} onClick={onClick}/>);
 		case 'show': return (<ShowCell item={item as ShowResult}/>);
 		case 'track': return (<TrackCell item={item as TrackResult} onClick={onClick}/>);
 		default: return (<Card>

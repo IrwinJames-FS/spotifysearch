@@ -5,6 +5,7 @@ import { getSelf, refresh, search, signout } from "./utils/api";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { SearchResult } from "./components/common.types";
 import { Player } from "./components/Player";
+import { DetailContainer } from "./DetailContainer";
 type AppUser = {
 	displayName: string
 	accessToken: string
@@ -48,9 +49,11 @@ export const Application = () => {
 	return (<ApplicationContext.Provider value={{user, loadingUser, userError }}>
 		<ThemeProvider theme={theme}>
 			<CssBaseline/>
-			<Player>
-				<Outlet/>
-			</Player>
+			<DetailContainer>
+				<Player>
+					<Outlet/>
+				</Player>
+			</DetailContainer>
 		</ThemeProvider>
 	</ApplicationContext.Provider>);
 }

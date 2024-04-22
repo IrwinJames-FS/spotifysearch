@@ -3,8 +3,6 @@ import dotenv from 'dotenv';
 import { greenlg, redlg } from './utils/cx';
 import api from './api';
 import mongoose from 'mongoose';
-import { renderSPA } from './controllers/v1/statics';
-import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import proxy from 'express-http-proxy'
 dotenv.config();
@@ -21,4 +19,10 @@ app.use(express.json());
 app.use('/api', api);
 app.use('/', NODE_ENV === "development" ? proxy("http://localhost:3000"):express.static('../client/build'));
 
+interface ApiErrorType extends Error {
+	status?: number
+}
+app.use((error: ApiErrorType, request: Request, response:Response, next: NextFunction) => {
+	return response.status(error.status ?? 500).json({message: error.message});
+});
 app.listen(PORT, ()=>greenlg`[express] Server is listening on port ${PORT}`)

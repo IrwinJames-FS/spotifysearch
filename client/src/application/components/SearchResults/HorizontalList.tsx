@@ -6,12 +6,14 @@ import { ResultCell } from "./ResultCell";
 import { useResultGroup } from "../../hooks/useResultGroup";
 import { CardActionArea } from "./common";
 import { Refresh } from "@mui/icons-material";
-import { play } from "../../utils/api";
+import { getItem, play } from "../../utils/api";
 import { usePlayer } from "../Player";
+import { useDetails } from "../../DetailContainer";
 
 export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultItem>}> = ({title, group}) => {
 	const [loading, error, grp, next] = useResultGroup(group);
 	const theme = useTheme();
+	const {setDetails} = useDetails();
 	const ref = useRef<HTMLDivElement | null>(null);
 	const { device_id, setToast } = usePlayer();
 	const [width, setWidth] = useState(0);
@@ -44,16 +46,18 @@ export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultI
 
 	const onItemClick = useCallback((item: ResultItem) => {
 		if(!device_id) {
-			console.log("No device id");
 			setToast({open: true, autoHideDuration: 3e3, title: "The player is not currently available", severity: "error"})
 			return;
 		}
-		console.log(item.uri);
 		play(item.uri, device_id!)
 	}, [device_id]);
-	const nonPlayableClick = useCallback((item: ResultItem) => {
-		console.log(item);
-	}, []);
+	const nonPlayableClick = useCallback(async (item: ResultItem) => {
+		if(!device_id) {
+			setToast({open: true, autoHideDuration: 3e3, title: "The player is not currently available", severity: "error"})
+			return;
+		}
+		setDetails({...item, device_id});
+	}, [device_id, setToast, setDetails]);
 	useEffect(()=>{
 		if(!ref.current) return;
 		onResize();
@@ -74,7 +78,7 @@ export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultI
 		</Toolbar>
 	</Card>
 	<Stack direction="row" gap={1} overflow="scroll" onScroll={onScroll} ref={ref}>
-		{data.map((item, i)=><ResultCell item={item} key={i} onPlay={onItemClick} onClick={nonPlayableClick}/>)}
+		{data.map((item, i)=><ResultCell item={item} key={i} onClick={nonPlayableClick}/>)}
 		{error && <Card>
 			<CardActionArea>
 				<Flex fill center>

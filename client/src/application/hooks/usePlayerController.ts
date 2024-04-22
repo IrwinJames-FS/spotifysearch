@@ -12,19 +12,24 @@ export type PlayerState = {
 	duration: number
 	position: number
 	timestamp: number
+	id: string | null
+	type: string
 }
 export type PlayerErrorType = PlayerAccountError | PlayerAuthError | PlayerInitError | undefined
 export type ErrConstructor<T> = new (message?: string) => T
 
 const convertState = ({paused, duration, position, timestamp, ...state}: Spotify.PlaybackState) : PlayerState => {
+	console.log(state);
 	const images = state.track_window.current_track.album.images ?? []
 	const img = images.length ? (images.find(i=>i.size==='SMALL') ?? images[0]):undefined;
 	const track_name = state.track_window.current_track.name;
 	const album_name = state.track_window.current_track.album.name;
 	const artist_name = state.track_window.current_track.artists.map(a=>a.name).join(', ');
+	const id = state.track_window.current_track.id;
+	const type = state.track_window.current_track.type;
 	if (img) {(img as PlayImage).alt = `${track_name} | ${album_name}`;}
 	return {
-		paused, duration, position, timestamp, track_name, album_name, img, artist_name
+		paused, duration, position, timestamp, track_name, album_name, img, artist_name, id, type
 	}
 }
 type Err = {
@@ -70,22 +75,21 @@ export const usePlayerController = (token?: string):[string | undefined, PlayerS
 	//The callback the window will call
 	const onSpotifyReady = useCallback(() => {
 		
-		setPlayer(new window.Spotify.Player({
-			name: 'snymaxspotifysearch',
-			getOAuthToken,
-			volume: 0.5
-		}));
+		setPlayer(p=>{
+			if(p) p.disconnect();
+			return new window.Spotify.Player({
+				name: 'snymaxspotifysearch',
+				getOAuthToken,
+				volume: 0.5
+			})
+		});
 	}, [setPlayer, getOAuthToken]);
 	
-	//The api by spotify is dodgy it recommends proxying but does not allow you to change the urls it uses when fetching which creates cross domain issues. That being said the player should be controllable via the web api
-	const togglePlayback = useCallback(() => {
-		if(!device_id) return;
-	}, [device_id]);
 	useEffect(()=>{
-		if(isLoading.current) return;
-		if(device_id) return;
-		if(!token) return;
-		isLoading.current = true
+		if(isLoading.current) return; //dont want to run this if loading... loading is a ref because UI is not reliant on this variable nor do we want to redraw when this value changes
+		if(device_id) return; //If we already have a device id we want to halt. This can happen when a refresh token updates the OAuth callback
+		if(!token) return; //No reason to add the script if there is no reason to add the script if no token
+		isLoading.current = true //Now we are loading if another use effect is triggered it should be halted 
 		scripter("https://sdk.scdn.co/spotify-player.js", "spotify-player");
 		window.onSpotifyWebPlaybackSDKReady = onSpotifyReady;
 	}, [onSpotifyReady, token, device_id]);
@@ -99,7 +103,10 @@ export const usePlayerController = (token?: string):[string | undefined, PlayerS
 		player.addListener('playback_error', onPlaybackError);
 		player.addListener('player_state_changed', onStateChange);
 		player.connect();
+
+		//adding a deconstructor breaks the player I will need to look into this further
 	}, [player, onReady, onInitError, onAuthError, onAccountError, onPlaybackError, onStateChange]);
+
 	return [device_id, state, error, player];
 }
 
