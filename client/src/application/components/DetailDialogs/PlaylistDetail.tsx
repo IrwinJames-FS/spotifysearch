@@ -10,7 +10,7 @@ import { TrackTable } from "./TrackTable";
 type PlaylistTrackItem = {
 	track: TrackResult
 }
-export const PlaylistDetail: FC<PlaylistItem> = ({name, description, images, tracks}) => {
+export const PlaylistDetail: FC<PlaylistItem> = ({name, description, images, tracks, device_id}) => {
 	const image = useMemo(()=>images?.length ? images[0]:undefined, [images])
 	const [,, hydratedTracks] = useAsync<TrackResult[] | undefined>(useCallback(async ()=>{
 		if(!tracks.href) return undefined;
@@ -27,6 +27,6 @@ export const PlaylistDetail: FC<PlaylistItem> = ({name, description, images, tra
 			</Stack>
 		</Stack>
 	</Title>
-	{hydratedTracks && <TrackTable tracks={hydratedTracks}/>}
+	{hydratedTracks && <TrackTable tracks={hydratedTracks} device_id={device_id}/>}
 	</>);
 }

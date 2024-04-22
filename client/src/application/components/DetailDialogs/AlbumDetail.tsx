@@ -1,9 +1,9 @@
 import { FC} from "react";
 import { DetailsList, Image, T, Title } from "./common.ui";
 import { TrackTable } from "./TrackTable";
-import { HydradedAlbumResult } from "../common.types";
+import { AlbumItem } from "./types";
 
-export const AlbumDetail: FC<HydradedAlbumResult> = ({name, images, total_tracks, id, tracks,  ...rest}) => {
+export const AlbumDetail: FC<AlbumItem> = ({name, images, total_tracks, id, tracks, device_id,  ...rest}) => {
 	return (<>
 	<Title>
 		<Image {...{images, size: 'lg'}}/>
@@ -12,6 +12,6 @@ export const AlbumDetail: FC<HydradedAlbumResult> = ({name, images, total_tracks
 			<T>{total_tracks} Tracks</T>
 		</DetailsList>
 	</Title>
-	<TrackTable tracks={tracks.items}/>
+	<TrackTable tracks={tracks.items} device_id={device_id}/>
 	</>)
 }

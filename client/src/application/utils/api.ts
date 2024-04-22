@@ -19,9 +19,11 @@ export const next = <T extends ResultItem>(uri:string): Promise<SearchResultGrou
 
 export const signout = ()=> axios.delete(`${BASE_URL}/auth`, {withCredentials: true})
 
-export const play = (uri: string, device_id: string) => axios.put(`${BASE_URL}/player`, {
+export const play = (uri: string | string[], device_id: string) => axios.put(`${BASE_URL}/player`, {
 	uri, device_id
 }, {withCredentials: true}).then(r=>r.data);
+
+
 
 export const transfer = (device_id: string) => axios.put(`${BASE_URL}/player/transfer`, {
 	device_id

@@ -1,9 +1,11 @@
 import { FC } from "react";
 import { TrackResultLite } from "../common.types";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
 import { dx } from "../../utils/dx";
+import { PlayArrow } from "@mui/icons-material";
+import { play } from "../../utils/api";
 
-export const TrackTable: FC<{tracks:TrackResultLite[]}> = ({tracks}) => {
+export const TrackTable: FC<{tracks:TrackResultLite[], device_id: string}> = ({tracks, device_id}) => {
 	return (<TableContainer>
 		<Table>
 			<TableHead>
@@ -11,6 +13,7 @@ export const TrackTable: FC<{tracks:TrackResultLite[]}> = ({tracks}) => {
 					<TableCell>Track</TableCell>
 					<TableCell>Name</TableCell>
 					<TableCell>Time</TableCell>
+					<TableCell></TableCell>
 				</TableRow>
 			</TableHead>
 			<TableBody>
@@ -18,6 +21,7 @@ export const TrackTable: FC<{tracks:TrackResultLite[]}> = ({tracks}) => {
 					<TableCell>{i+1}</TableCell>
 					<TableCell>{track.name}</TableCell>
 					<TableCell>{dx(track.duration_ms*10)}</TableCell>
+					<TableCell><Tooltip title="Play now!"><IconButton color="primary" onClick={()=>play([track.uri], device_id)}> <PlayArrow/> </IconButton></Tooltip></TableCell>
 				</TableRow>)}
 			</TableBody>
 		</Table>
