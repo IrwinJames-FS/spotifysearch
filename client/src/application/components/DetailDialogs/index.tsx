@@ -12,7 +12,6 @@ import { ArtistDetail } from "./ArtistDetail";
 
 export const Detail: FC<{result?: DetailsState}> = ({result}) => {
 	if(!result) return null;
-	console.log(result.type);
 	switch (result.type) {
 		case 'artist': return <ArtistDetail {...result as ArtistItem}/>
 		case 'audiobook': return <AudiobookDetail {...result as AudiobookItem}/>

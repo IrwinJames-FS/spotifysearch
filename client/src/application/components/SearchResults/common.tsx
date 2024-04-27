@@ -2,10 +2,11 @@
 import { Box as MuiBox, Card as MuiCard, CardContent as MuiCardContent, CardActionArea as MuiCardActionArea, Theme, styled, Typography, Divider, Stack } from "@mui/material";
 import { Flex } from "../Flex";
 import { FC, ReactNode } from "react";
+import { Image } from "../Image";
 
 export const Box = styled(MuiBox)({display: 'inline-flex', p:1});
 
-export const Img = styled('img')({
+export const Img = styled(Image)({
 	width: '100%'
 })
 

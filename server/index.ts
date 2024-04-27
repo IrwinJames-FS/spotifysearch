@@ -4,7 +4,8 @@ import { greenlg, redlg } from './utils/cx';
 import api from './api';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
-import proxy from 'express-http-proxy'
+import proxy from 'express-http-proxy';
+import cors from 'cors';
 dotenv.config();
 const app = express();
 
@@ -14,6 +15,7 @@ mongoose.connect(MONGO as string);
 const db = mongoose.connection;
 db.on('error', (error: unknown) =>redlg`[MONGO] Database Error: ${(error as Error).message}`); //Should probably be outputting to a log... heroku does this for you.
 db.once('open', () => greenlg`[MONGO] Connection successfull`)
+app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use('/api', api);

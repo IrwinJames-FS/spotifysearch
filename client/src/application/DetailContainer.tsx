@@ -12,7 +12,6 @@ export const DetailContainer: FC<ParentElement> = ({children}) => {
 	const [details, setDetails] = useState<DetailsState | undefined>();
 	const open = useMemo(()=>!!details, [details]);
 	const closeDialog = useCallback(()=>setDetails(undefined), [setDetails]);
-
 	return <DetailContext.Provider value={{setDetails}}>
 		{children}
 		<Dialog open={open} sx={{

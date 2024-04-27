@@ -1,13 +1,10 @@
-import { FC } from "react";
-import { CaptionArea, CaptionComponent, Card, CardActionArea, Img, NameComponent, NameLabel } from "../common";
 import { ShowResult } from "../../common.types";
-import { useImage } from "../../../hooks/useImage";
+import { CaptionArea, CaptionComponent, NameComponent } from "../common";
 import { DetailCell } from "./DetailCell";
+import { GenericResultCell } from "./types";
 
-export const ShowCell: FC<{item: ShowResult}> = ({item}) => {
-	const img = useImage(item.images);
-	return (<DetailCell {...{title: item.name, id: item.id, type: 'show'}}>
-		{img && <Img {...{src: img.src, alt: item.name}}/>}
+export const ShowCell: GenericResultCell<ShowResult> = ({item}) => {
+	return (<DetailCell {...{item}}>
 		<CaptionArea justifyContent="center">
 			<NameComponent name={item.name}/>
 			<CaptionComponent title="Episodes" value={item.total_episodes}/>

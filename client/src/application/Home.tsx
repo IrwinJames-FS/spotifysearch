@@ -23,12 +23,14 @@ export const Home = () => {
 	const onSearch = useCallback((value: string)=>{
 		navigate(`/?${qs.stringify({q: value})}`)
 	}, [navigate]);
+	
 	const [loading, error, results] = useAsync<SearchResult | undefined>(useCallback(async ()=>{
 		if(!user) return undefined;
 		const q = query.trim();
 		if(!q) return undefined;
 		return await search(q);
 	}, [query, user]));
+
 	const keys: (keyof SearchResult)[] | undefined = useMemo(()=>{
 		if(loading || error || !results) return undefined
 		return (Object.keys(results) as (keyof SearchResult)[]).sort((a, b)=>results[b].total-results[a].total)

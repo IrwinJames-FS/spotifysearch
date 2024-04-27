@@ -11,19 +11,20 @@ const cookieAuth = passport.authenticate('cookie', {session: false})
 const router = Router();
 
 router.get('/', passport.authenticate('spotify', {
-	scope: ['streaming', 'user-read-email', 'user-read-private', 'user-modify-playback-state']
+	scope: ['streaming', 'user-read-email', 'user-read-private', 'user-modify-playback-state', 'user-read-currently-playing', 'user-read-playback-state']
 }));
 
 router.get('/callback', passport.authenticate('spotify', {failureRedirect: 'http//localhost:3001/api/v1/auth', session: false}), (req: Request, res: Response)=> {
 	const user = req.user! as UserDocument
-	res.cookie('auth', user._id, {expires: new Date(user.expires), domain: 'localhost', path: '/', secure:true, sameSite: true, httpOnly:true})
+	const cookie = {expires: new Date(user.expires), domain: 'localhost', path: '/', secure:true, sameSite: true, httpOnly:true}
+	res.cookie('auth', user._id, cookie);
 	res.redirect(302, 'http://localhost:3001');
 });
 
 router.get('/signout', cookieAuth, (req, res) => {
 	res.clearCookie("auth");
 	res.redirect(302, 'http://localhost:3001');
-})
+});
 
 /**
  * This will be a method to check if the user exists it will always return 200 however will only populate a user if the auth cookie is set.

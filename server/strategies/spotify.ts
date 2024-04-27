@@ -10,7 +10,7 @@ passport.use(new Strategy({
 	callbackURL: 'http://localhost:3001/api/v1/auth/callback'
 }, async (accessToken: string, refreshToken: string, expires_in: number, profile: Profile, done: VerifyCallback) => {
 	try{
-		const user = await User.findByIdAndUpdate(profile.id, {$set: {displayName: profile.displayName, accessToken, refreshToken, expires: new Date().getTime()+(expires_in*1e3)}}, {upsert: true});
+		const user = await User.findByIdAndUpdate(profile.id, {$set: {displayName: profile.displayName, accessToken, refreshToken, expires: Date.now()+(expires_in*1e3)}}, {upsert: true});
 		return done(null, user!);
 	} catch (error) {
 		return done(error as Error)

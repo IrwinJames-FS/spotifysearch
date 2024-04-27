@@ -21,16 +21,29 @@ export const Player = ({children}:ParentElement) => {
 	return (<PlayerContext.Provider value={{device_id, setToast}}>
 		{children}
 		<Toast {...toast} onClose={closeToast}/>
+		{user && <QueueList />}
 		{user && <Px {...{...playerState, device_id, player}}/>}
-	</PlayerContext.Provider>)
+	</PlayerContext.Provider>);
 }
 
 const Toast: FC<SnackbarProps & AlertProps> = ({open, title, onClose, autoHideDuration, severity}) => {
 	return (<Snackbar {...{open, onClose, autoHideDuration}}>
 		<Alert {...{severity}}>{title}</Alert>
-	</Snackbar>)
+	</Snackbar>);
 }
 
+const QCard = styled(Card)({
+	display: 'inline-flex',
+	position: 'fixed',
+	bottom: 96,
+	left: 4,
+	minWidth: 256
+})
+const QueueList: FC = () => {
+	return (<QCard>
+		Queue Test
+	</QCard>)
+}
 const Px: FC<PlayerControllerProps> = props =>{
 	return (<Bx>
 		<Stack direction="row" gap={1}>
@@ -94,7 +107,7 @@ const PlayerController: FC<PlayerControllerProps> = ({device_id, paused, player,
 	return (<Stack sx={{p:1}}>
 		<Stack direction="row" justifyContent="space-between" sx={{minWidth: 128}}>
 			<IconButton onClick={onPrev}><SkipPrevious/></IconButton>
-			<IconButton onClick={onToggle}>{paused ? <PlayArrow/>:<Pause/>}</IconButton>
+			<IconButton onClick={onToggle}>{paused ?? true ? <PlayArrow/>:<Pause/>}</IconButton>
 			<IconButton onClick={onNext}><SkipNext/></IconButton>
 		</Stack>
 		<PlayerSeeker {...{player, paused, ...props}} />
@@ -103,6 +116,7 @@ const PlayerController: FC<PlayerControllerProps> = ({device_id, paused, player,
 
 const PlayerSeeker: FC<PlayerControllerProps> = ({paused, duration=0, position=0, timestamp=0, player}) => {
 	const [value, setValue] = useState(position);
+
 	let interval = useRef<NodeJS.Timer | null>(null);
 	let timeout = useRef<NodeJS.Timer | null>(null);
 
@@ -114,12 +128,15 @@ const PlayerSeeker: FC<PlayerControllerProps> = ({paused, duration=0, position=0
 			await player?.seek(Math.floor(val/10))
 			timeout.current = null
 		}, 1e3);
-	}, [setValue, player])
+	}, [setValue, player]);
+
 	useEffect(()=>{
 		if (interval.current) return
 		interval.current = setInterval(()=>{
 			if(paused || timeout.current) return;
+			if (paused === undefined) return setValue(0); //If paused is not defined nothing should be done.
 			const diff = (new Date().getTime() - timestamp) + (position*10);
+
 			setValue(diff);
 		}, 1e3)
 		return () => {

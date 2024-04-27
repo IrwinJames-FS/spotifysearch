@@ -18,9 +18,10 @@ export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultI
 	const { device_id, setToast } = usePlayer();
 	const [width, setWidth] = useState(0);
 	const cellWidth = useMemo(()=>theme.constants.gridCellWidth+8, [theme.constants.gridCellWidth]);
-	const bf = useMemo(()=>theme.constants.horizontalVirtualizeBuffer, [theme.constants.horizontalLoadOffset]);
+	const bf = useMemo(()=>theme.constants.horizontalVirtualizeBuffer, [, theme.constants.horizontalVirtualizeBuffer]);
 	const maxVis = useMemo(()=>Math.ceil(width/theme.constants.gridCellWidth+theme.constants.horizontalVirtualizeBuffer), [width, theme.constants])
 	const [{start, end}, setBounds] = useState<{start: number, end: number}>({start: 0, end: 0});
+
 	const updatePointers = useCallback(()=> {
 		if(!ref.current) return;
 		const s = Math.floor(ref.current.scrollLeft/cellWidth);
@@ -28,6 +29,7 @@ export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultI
 		const end = start + maxVis;
 		setBounds({start, end});
 	}, [cellWidth, bf, maxVis])
+
 	const onScroll: UIEventHandler<HTMLDivElement> = useCallback((e)=>{
 		updatePointers();
 		if(loading || !grp) return;
@@ -44,13 +46,7 @@ export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultI
 		setWidth(ref.current.clientWidth);
 	}, [setWidth]);
 
-	const onItemClick = useCallback((item: ResultItem) => {
-		if(!device_id) {
-			setToast({open: true, autoHideDuration: 3e3, title: "The player is not currently available", severity: "error"})
-			return;
-		}
-		play(item.uri, device_id!)
-	}, [device_id]);
+
 	const nonPlayableClick = useCallback(async (item: ResultItem) => {
 		if(!device_id) {
 			setToast({open: true, autoHideDuration: 3e3, title: "The player is not currently available", severity: "error"})
@@ -58,6 +54,7 @@ export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultI
 		}
 		setDetails({...item, device_id});
 	}, [device_id, setToast, setDetails]);
+
 	useEffect(()=>{
 		if(!ref.current) return;
 		onResize();
@@ -78,7 +75,7 @@ export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultI
 		</Toolbar>
 	</Card>
 	<Stack direction="row" gap={1} overflow="scroll" onScroll={onScroll} ref={ref}>
-		{data.map((item, i)=><ResultCell item={item} key={i} onClick={nonPlayableClick}/>)}
+		{data.map((item, i)=><ResultCell item={item} key={i}/>)}
 		{error && <Card>
 			<CardActionArea>
 				<Flex fill center>

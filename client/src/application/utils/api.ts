@@ -19,11 +19,19 @@ export const next = <T extends ResultItem>(uri:string): Promise<SearchResultGrou
 
 export const signout = ()=> axios.delete(`${BASE_URL}/auth`, {withCredentials: true})
 
-export const play = (uri: string | string[], device_id: string) => axios.put(`${BASE_URL}/player`, {
-	uri, device_id
+export const play = (device_id: string, context_uri?: string, uri?: string) => axios.put(`${BASE_URL}/player`, {
+	context_uri, uri, device_id
 }, {withCredentials: true}).then(r=>r.data);
 
-
+type PlayOptions = {
+	context_uri?: string,
+	uris?: string[]
+	offset?: {
+		uri?: string
+		position?: number
+	}
+}
+export const playIt = (device_id: string, options: PlayOptions) => axios.put(bl`/player/play?${qs.stringify({device_id})}`, options).then(r=>r.data);
 
 export const transfer = (device_id: string) => axios.put(`${BASE_URL}/player/transfer`, {
 	device_id
@@ -35,3 +43,4 @@ export const getItem = (type: string, id: string) => axios.get(bl`/spot/${type}s
 
 export const addToQueue = (uri: string, device_id: string) => axios.post(bl`/spot/me/player/queue?${qs.stringify({uri, device_id})}`, {} , {withCredentials:true}).then(r=>r.data);
 
+export const getQueue = () => axios.get(bl`/spot/me/player/queue`, {withCredentials: true}).then(r=>r.data);

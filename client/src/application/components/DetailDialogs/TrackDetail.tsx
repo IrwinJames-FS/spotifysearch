@@ -15,7 +15,6 @@ import { TrackTable } from "./TrackTable";
 export const TrackDetail: FC<TrackItem> = ({device_id, name, duration_ms, album, artists, track_number, external_urls, uri, ...rest}) => {
 	const [isLoadingAlbumnInfo,, albumInfo] = useAsync<HydradedAlbumResult>(useCallback(async () => {
 		const a =  await getItem('album', album.id);
-		console.log(a);
 		return a;
 	}, [album.id]))
 
@@ -23,9 +22,8 @@ export const TrackDetail: FC<TrackItem> = ({device_id, name, duration_ms, album,
 		addToQueue(uri, device_id);
 	}, [uri, device_id]);
 	const playNow = useCallback(()=>{
-		play([uri], device_id);
-	}, [uri, device_id])
-	console.log(rest);
+		play(device_id, album.uri, uri);
+	}, [uri, device_id, album.uri])
 	return (<>
 	<Title>
 		<Image {...{images: album.images, size: 'lg'}}/>
@@ -35,12 +33,12 @@ export const TrackDetail: FC<TrackItem> = ({device_id, name, duration_ms, album,
 			<T>{artists.map(a=>a.name).join(', ')}</T>
 			<T>{track_number}/{album.total_tracks}</T>
 			<Stack direction="row" sx={{bgcolor:'overlays.300'}}>
-				<Tooltip title="Add to queue">
+				{!!device_id && <Tooltip title="Add to queue">
 					<IconButton onClick={addTrackToQueue}><Add/></IconButton>
-				</Tooltip>
-				<Tooltip title="Play now">
+				</Tooltip>}
+				{!!device_id && <Tooltip title="Play now">
 					<IconButton onClick={playNow}><PlayArrow/></IconButton>
-				</Tooltip>
+				</Tooltip>}
 			</Stack>
 		</DetailsList>
 	</Title>
@@ -50,7 +48,7 @@ export const TrackDetail: FC<TrackItem> = ({device_id, name, duration_ms, album,
 				<Button variant="contained" component={"a"} href={external_urls.spotify} target="_blank" color="primary" startIcon={<FaSpotify/>}>Open in Spotify</Button>
 			</Stack>}
 		</Stack>
-		{isLoadingAlbumnInfo ? <CircularProgress/>:<TrackTable tracks={albumInfo!.tracks.items} device_id={device_id}/>}
+		{<TrackTable tracks={albumInfo?.tracks.items} context={album.uri} length={album.total_tracks} device_id={device_id}/>}
 	</DialogContent>
 	</>)
 }

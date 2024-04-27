@@ -26,8 +26,17 @@ export const searchSpotify = (q:string, token:string, types:string[]=['artist','
 
 export const nextSpotifyResult = (uri: string, token:string) => axios.get(uri, authToken(token)).then(r=>r.data);
 
-export const playSpotifyUri = (context_uri: string | string[], device_id:string, token: string) => ax.put('/me/player/play', token, {device_id}, typeof context_uri === 'string' ? {context_uri}:{uris:context_uri});
+export const playSpotifyUri = (context_uri: string | undefined, uri: string | undefined, device_id:string, token: string) => ax.put('/me/player/play', token, {device_id}, {context_uri, ...(!!uri && {offset: {uri}})});
 
+type PlayProps = {
+	context_uri?: string,
+	uris?: string[],
+	offset?: {
+		uri?: string
+		position?: number
+	}
+}
+export const playSpotify = (device_id: string, token: string, options: PlayProps ) => ax.put('/me/player/play', token, {device_id}, options);
 export const transferPlayback = (device_id: string, token: string, play: boolean = false) => ax.put('/me/player', token, undefined, {device_ids:[device_id], play:true});
 
 const itemTypes: Set<string> = new Set(['albums', 'artists', 'audiobooks', 'categories', 'chapters', 'episodes', 'genres', 'shows', 'tracks', 'playlists']);

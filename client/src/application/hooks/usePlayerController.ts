@@ -18,18 +18,18 @@ export type PlayerState = {
 export type PlayerErrorType = PlayerAccountError | PlayerAuthError | PlayerInitError | undefined
 export type ErrConstructor<T> = new (message?: string) => T
 
-const convertState = ({paused, duration, position, timestamp, ...state}: Spotify.PlaybackState) : PlayerState => {
+const convertState = ({paused, duration, position, timestamp, track_window, ...state}: Spotify.PlaybackState) : PlayerState => {
 	console.log(state);
-	const images = state.track_window.current_track.album.images ?? []
+	const images = track_window.current_track.album.images ?? []
 	const img = images.length ? (images.find(i=>i.size==='SMALL') ?? images[0]):undefined;
-	const track_name = state.track_window.current_track.name;
-	const album_name = state.track_window.current_track.album.name;
-	const artist_name = state.track_window.current_track.artists.map(a=>a.name).join(', ');
-	const id = state.track_window.current_track.id;
-	const type = state.track_window.current_track.type;
+	const track_name = track_window.current_track.name;
+	const album_name = track_window.current_track.album.name;
+	const artist_name = track_window.current_track.artists.map(a=>a.name).join(', ');
+	const id = track_window.current_track.id;
+	const type = track_window.current_track.type;
 	if (img) {(img as PlayImage).alt = `${track_name} | ${album_name}`;}
 	return {
-		paused, duration, position, timestamp, track_name, album_name, img, artist_name, id, type
+		paused: paused || !timestamp, duration, position, timestamp, track_name, album_name, img, artist_name, id, type
 	}
 }
 type Err = {
@@ -41,6 +41,7 @@ export const usePlayerController = (token?: string):[string | undefined, PlayerS
 	const [device_id, setDeviceId] = useState<string | undefined>()
 	const [state, setState] = useState<PlayerState | undefined>();
 	const [error, setError] = useState<PlayerErrorType>();
+	
 
 	//Just a generic manner of differenciating errors
 
@@ -54,11 +55,17 @@ export const usePlayerController = (token?: string):[string | undefined, PlayerS
 	const getOAuthToken = useCallback((cb: (token:string)=>void)=>cb(token!), [token]);
 
 	//Store the device_id and cache it for later comparison
-	const onReady = useCallback(({device_id}: {device_id:string})=>{
+	const onReady = useCallback(async ({device_id}: {device_id:string})=>{
 		let item = sessionStorage.getItem('spotify-device-id');
 		if(item && item !== device_id) {
 			console.log("item id", item, device_id);
-			transfer(device_id);
+			try {
+				await transfer(device_id);
+			} catch (error) {
+				console.log(error);
+				setError(new TransferPlaybackError("Failed to transfer playback"))
+			}
+			
 		}
 		sessionStorage.setItem('spotify-device-id', device_id)
 		setDeviceId(device_id);
@@ -135,5 +142,12 @@ export class PlayerPlaybackError extends Error {
 	constructor(message: string = "Playback Error") {
 		super(message);
 		this.name = "PlayerPlaybackError"
+	}
+}
+
+export class TransferPlaybackError extends Error {
+	constructor(message: string = "TransferPlaybackError") {
+		super(message);
+		this.name = "TransferPlaybackError";
 	}
 }

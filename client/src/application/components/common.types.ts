@@ -4,6 +4,7 @@ export type ParentElement = {
 	children?: ReactNode
 }
 
+export type ResultType = 'album' | 'artist' | 'audiobook' | 'playlist' | 'show' | 'track' | 'episode'
 export type SearchResult = {
 	albums: SearchResultGroup<AlbumResult>
 	artists: SearchResultGroup<ArtistResult>
@@ -29,10 +30,13 @@ export type ResultItem = {
 	href: string
 	id: string
 	name: string
-	type: string
+	type: ResultType
 	uri: string
 	images?: ImageResult[]
 }
+
+export type AutoItem = AlbumResult | ArtistResult | AudioBookResult | EpisodeResult | PlaylistResult | ShowResult | TrackResult;
+
 export type AlbumResult = ResultItem & {
 	type: 'album'
 	album_type: string

@@ -1,13 +1,18 @@
 import { Stack, StackProps } from "@mui/material"
 import { FC } from "react"
 
-type FlexProps = StackProps & {
+export type FlexProps = StackProps & {
 	fill?: boolean
 	center?: boolean
 	row?: boolean
 	justifyEnd?:boolean
+	stretch?: boolean
+	justifyStart?: boolean
+	grow?: boolean
+	split?: boolean
+	slim?: boolean
 }
-export const Flex: FC<FlexProps> = ({fill, center, row, justifyEnd, sx={}, ...props}:FlexProps) => {
+export const Flex: FC<FlexProps> = ({fill, center, row, justifyEnd, justifyStart, grow, stretch, split, slim, sx={}, ...props}:FlexProps) => {
 	return (<Stack {...{
 		sx: {
 			...sx,
@@ -15,6 +20,11 @@ export const Flex: FC<FlexProps> = ({fill, center, row, justifyEnd, sx={}, ...pr
 		},
 		...(row && {direction: 'row'}),
 		...(justifyEnd && {justifyContent: 'flex-end'}),
+		...(justifyStart && {justifyContent: 'flex-start'}),
 		...(center && {justifyContent: 'center', alignItems: 'center'}),
-		...props}}/>)
+		...(stretch && {alignItems: 'stretch'}),
+		...(grow && {flexGrow: 1}),
+		...(split && {justifyContent: 'space-between'}),
+		...(slim && {alignItems: 'center'}),
+		...props}}/>);
 }

@@ -3,6 +3,8 @@ import { FC, useMemo } from "react";
 import { ParentElement, TrackResult } from "../common.types";
 import { Img } from "../ImageSlider";
 import { useImages } from "../../hooks/useImages";
+import { Flex, FlexProps } from "../Flex";
+import { styled } from "@mui/system";
 
 export const T: FC<TypographyProps> = ({sx, ...props}) => (<Typography sx={{bgcolor:'overlays.300', p:1, ...sx}} {...props}/>);
 export const Title: FC<DialogTitleProps> = ({sx, children, ...props}) => (<DialogTitle sx={{bgcolor: 'primary.main', color: 'primary.contrastText', ...sx}} {...props}>
@@ -16,6 +18,10 @@ export const DetailsList: FC<ParentElement> = ({children}) => {
 		{children}
 	</Stack>)
 }
+
+export const Fx = styled(Flex)(({theme})=>({
+	backgroundColor: theme.palette.overlays[300]
+}));
 
 export const Image: FC<{images: Spotify.Image[] | undefined, size?: "sm" | "md" | "lg" | number, alt?: string, sx?:Record<string, any>} & StyledComponentProps<"img">> = ({images, alt, size, sx, ...props}) => {
 	const image = useImages(images, alt, size)
