@@ -1,16 +1,16 @@
-import { Card, CardProps, CardTypeMap, List, ListItem, ListItemButton, ListItemIcon, ListItemText, styled } from "@mui/material";
+import { Card, CardTypeMap, List, ListItem, ListItemButton, ListItemText, SxProps, Theme, styled } from "@mui/material";
 import { FC, useCallback, useMemo } from "react";
-import { TrackResult } from "../../common.types";
-import { SpotifyQueue } from "../types";
 import { useSpotifyPlayer } from "../SpotifyPlayerContext";
-import { play, playIt } from "../../../utils/api";
+import { playIt } from "../../../utils/api";
 import { dx } from "../../../utils/dx";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
+import { getParentName } from "./methods";
 
 type WidgetQueueProps = {
 	open: boolean
+	expanded: boolean
 }
-export const WidgetQueue: FC<WidgetQueueProps> = ({open}) => {
+export const WidgetQueue: FC<WidgetQueueProps> = ({open, expanded}) => {
 	const { playerState, queue } = useSpotifyPlayer();
 	const current = useMemo(()=>queue?.currently_playing, [queue?.currently_playing])
 	const q = useMemo(()=>queue?.queue, [queue?.queue]);
@@ -26,24 +26,49 @@ export const WidgetQueue: FC<WidgetQueueProps> = ({open}) => {
 		}
 	}, [device_id, playerState?.context.uri]);
 	if(!q || !current) return null;
-	return (<QCard open={open}>
+	return (<QCard {...{open, expanded}}>
 		<List>
-			<ListItem selected>
-				<ListItemText primary={current.name} secondary={current.album.name}/>
-				<ListItemText secondary={dx(current.duration_ms*10)}/>
-			</ListItem>
-			{q.map((t,i)=><ListItemButton key={i} onClick={()=>{playTrack(t.uri)}}>
-				<ListItemText primary={t.name} secondary={t.album.name}/>
-				<ListItemText secondary={dx(t.duration_ms*10)}/>
-			</ListItemButton>)}
+			<QItem selected>
+				<ListItemText sx={mainTextStyle} primary={current.name} secondary={getParentName(current)}/>
+				<ListItemText sx={secondaryTextStyle} secondary={dx(current.duration_ms*10)}/>
+			</QItem>
+			{q.map((t,i)=><QBtn key={i} onClick={()=>{playTrack(t.uri)}}>
+				<ListItemText sx={mainTextStyle} primary={t.name} secondary={getParentName(t)}/>
+				<ListItemText sx={secondaryTextStyle} secondary={dx(t.duration_ms*10)}/>
+			</QBtn>)}
 		</List>
 	</QCard>);
 }
-type QCardProps = OverridableComponent<CardTypeMap<{open: boolean}>>
-const QCard = styled<QCardProps>(Card, {shouldForwardProp: prop=>prop!=='open'})(({theme, open})=>({
+
+
+type QCardProps = OverridableComponent<CardTypeMap<{open: boolean, expanded: boolean}>>
+
+const mainTextStyle: SxProps<Theme> = {
+	flexGrow: 1
+}
+
+const secondaryTextStyle: SxProps<Theme> = {
+	flexGrow: 0,
+	flexShrink: 0,
+	width: 64,
+	textAlign: 'center'
+}
+const QItem = styled(ListItem)({
+	display: 'flex',
+	flexDirection: 'row',
+	justifyContent: 'space-between'
+});
+
+const QBtn = styled(ListItemButton)({
+	display: 'flex',
+	flexDirection: 'row',
+	justifyContent: 'space-between'
+});
+
+const QCard = styled<QCardProps>(Card, {shouldForwardProp: prop=>!['open', 'expanded'].includes(prop as string)})(({theme, open, expanded})=>({
 	position: 'fixed',
 	left: open ? 4:-312,
-	bottom: 150,
+	bottom: expanded ? 150:108,
 	width: 312,
 	maxHeight: 'calc(100% - 14rem)',
 	overflowY:'scroll',

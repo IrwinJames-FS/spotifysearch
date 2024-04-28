@@ -86,6 +86,7 @@ export type EpisodeResult = ResultItem & {
 	language: string
 	languages: string[]
 	release_date: string,
+	show?: ShowResult
 }
 
 export type PlaylistResult = ResultItem & {
@@ -158,3 +159,4 @@ export type ImageResult = {
 export type AuthorResult = {
 	name: string
 }
+

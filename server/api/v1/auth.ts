@@ -16,7 +16,8 @@ router.get('/', passport.authenticate('spotify', {
 
 router.get('/callback', passport.authenticate('spotify', {failureRedirect: 'http//localhost:3001/api/v1/auth', session: false}), (req: Request, res: Response)=> {
 	const user = req.user! as UserDocument
-	const cookie = {expires: new Date(user.expires), domain: 'localhost', path: '/', secure:true, sameSite: true, httpOnly:true}
+	const cookie = {expires: new Date(user.expires), domain: 'localhost', path: '/', httpOnly:false}
+	console.log(req)
 	res.cookie('auth', user._id, cookie);
 	res.redirect(302, 'http://localhost:3001');
 });
@@ -57,11 +58,11 @@ router.get('/refresh', cookieAuth, async (req, res) => {
 				'Authorization': `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`
 			}
 		});
-		console.log(user.accessToken === data.access_token);
+		console.log(data);
 		user.accessToken = data.access_token
 		user.expires = new Date().getTime()+(data.expires_in*1e3);
 		const updatedUser = await user.save();
-		res.cookie('auth', user._id, {expires: new Date(updatedUser.expires), domain: 'localhost', path: '/', secure:true, sameSite: true, httpOnly:true})
+		res.cookie('auth', user._id, {expires: new Date(updatedUser.expires), domain: 'localhost', path: '/', httpOnly:true})
 		return res.status(200).json(user ? {user:{displayName: updatedUser.displayName, accessToken: updatedUser.accessToken, expires: updatedUser.expires}}:{user:null});
 	} catch (error) {
 		const e = error as Record<string, any>

@@ -1,19 +1,23 @@
 
-import { Card, styled } from "@mui/material"
+import { Card, Theme, styled, useMediaQuery } from "@mui/material"
 import { useSpotifyPlayer } from "./SpotifyPlayerContext"
 import { WidgetInfo } from "./widget";
 import { WidgetPlayer } from "./widget/WidgetPlayer";
 import { WidgetQueue } from "./widget/WidgetQueue";
 import { useBool } from "../../hooks/useBool";
+import { useMemo } from "react";
 
 export const PlayerWidget = () => {
-	const {playerState, player, queue} = useSpotifyPlayer();
-	const [qOpen, toggleQueue] = useBool();
+	const {playerState:state, player} = useSpotifyPlayer();
+	const [open, toggleQueue] = useBool();
+	const [ex, toggleExpanded] = useBool(true);
+	const isSm = useMediaQuery<Theme>(theme=>theme.breakpoints.down('sm'));
+	const expanded = useMemo(()=>!isSm && ex, [ex, isSm]);
 	return (<>
-	<WidgetQueue open={qOpen}/>
+	<WidgetQueue {...{open, expanded}}/>
 	<PlayerCard>
-		<WidgetInfo state={playerState}/>
-		{!!playerState && !!player && <WidgetPlayer {...{state:playerState, player, toggleQueue}}/>}
+		<WidgetInfo {...{state, expanded}}/>
+		{!!state && !!player && <WidgetPlayer {...{state, player, expanded, toggleQueue, toggleExpanded}}/>}
 	</PlayerCard>
 </>)
 }

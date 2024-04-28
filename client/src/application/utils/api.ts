@@ -10,7 +10,7 @@ const bl = (strings: TemplateStringsArray, ...args:any[]): string => {
 }
 export const getSelf = () => axios.get(`${BASE_URL}/auth/self`, {withCredentials: true}).then(r=>r.data);
 
-export const search = (q: string) : Promise<SearchResult> => axios.get(`${BASE_URL}/search?${qs.stringify({q})}`, {withCredentials: true}).then(r=>r.data);
+export const search = (q: string, type: string[] | undefined=undefined, limit:number=20) : Promise<SearchResult> => axios.get(`${BASE_URL}/search?${qs.stringify({q, type, limit})}`, {withCredentials: true}).then(r=>r.data);
 export const forwardUri = (uri:string) => axios.get(bl`/search/next?${qs.stringify({uri})}`, {withCredentials:true}).then(r=>r.data);
 export const next = <T extends ResultItem>(uri:string): Promise<SearchResultGroup<T>> => forwardUri(uri).then(d=>{
 	const k = Object.keys(d)[0]

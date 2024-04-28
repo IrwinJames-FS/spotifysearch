@@ -17,6 +17,7 @@ export type DetailLoaderProps = {
 export const DetailLoader: FC<DetailLoaderProps> = ({item:{type, id, name, images:imgs}, images, children}) => {
 	const {setDetails} = useDetails();
 	const {device_id} = useSpotifyPlayer();
+	const s = {xs: 128, md: 256};
 	const onClick = useCallback(async () => {
 		try{
 			const item = await getItem(type, id);
@@ -27,7 +28,10 @@ export const DetailLoader: FC<DetailLoaderProps> = ({item:{type, id, name, image
 		}
 	}, [setDetails, device_id, id, type]);
 	return (<CardActionArea {...{name, onClick}}>
-		<Image {...{images: images ?? imgs, alt: name, size: 'lg'}}/>
+		<Image {...{images: images ?? imgs, alt: name, size: 'lg', sx:{
+			width: '100%',
+			aspectRatio: '1/1'
+		}}}/>
 		{children}
 	</CardActionArea>)
 }

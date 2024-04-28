@@ -6,7 +6,7 @@ import { scripter } from "../../utils/scripters";
 import { Outlet } from "react-router-dom";
 import { getQueue, transfer } from "../../utils/api";
 import { Alert, AlertProps, ListItemText, Snackbar, SnackbarProps } from "@mui/material";
-import { Error as MuiError } from "@mui/icons-material";
+import { Done, Error as MuiError } from "@mui/icons-material";
 
 
 declare global {
@@ -24,13 +24,14 @@ type Err = {
  * @returns 
  */
 export const SpotifyPlayer: FC<ParentElement> = memo(({children}) => {
-	scripter("https://sdk.scdn.co/spotify-player.js", "spotify-player");
 	const [{sdkReady, status, device_id, player, playerState, queue}, setSDKReady,  setStatus, setPlayer, setPlayerState, setQueue, setDeviceId] = useSpotifyPlayerState();
 	const [error, setError] = useState<Error | undefined>();
 	const [token, setToken] = useState<string | undefined>();
 	const [toastProps, setToast] = useState<Omit<ToastProps, "onClose"> | undefined>();
 	
-	const closeToast = useCallback(()=>setToast(undefined), [setToast])
+	const closeToast = useCallback(()=>{
+		setToast({open:false})
+	}, [setToast])
 
 	const onReady = useCallback(async ({device_id}:{device_id:string})=>{
 		let item = sessionStorage.getItem('spotify-device-id');
@@ -74,10 +75,11 @@ export const SpotifyPlayer: FC<ParentElement> = memo(({children}) => {
 	const onPlaybackError = useCallback(({message}:Err)=>{
 		console.log("Playback Error")
 		setError(new PlayerPlaybackError(message));
-		setToast({open: true, autoHideDuration: 3e3, icon: <MuiError/>, primary: "Playback Error", secondary: message})
+		setToast({open: true, autoHideDuration: 3e4, icon: <MuiError/>, primary: "Playback Error", secondary: message, severity:'error'})
 	}, [setError]);
 	//Watch for spotifies ready status
 	useEffect(()=>{
+		scripter("https://sdk.scdn.co/spotify-player.js", "spotify-player");
 		window.onSpotifyWebPlaybackSDKReady = () => {
 			setSDKReady();
 		}
@@ -113,7 +115,7 @@ export const SpotifyPlayer: FC<ParentElement> = memo(({children}) => {
 
 	return (<SpotifyPlayerContext.Provider value={{sdkReady, status, device_id, player, playerState, queue, setToken}}>
 		<Outlet/>
-		<Toast {...toastProps}/>
+		<Toast {...toastProps} onClose={closeToast}/>
 	</SpotifyPlayerContext.Provider>);
 }, ()=>true);
 SpotifyPlayer.displayName = 'SpotifyPlayer';

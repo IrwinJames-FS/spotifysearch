@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Application, Home } from './application';
 import { SpotifyPlayer } from './application/components/SpotifyPlayer';
+import { Search } from './application/Search';
 
 
 const App = () => {
@@ -12,6 +13,7 @@ const App = () => {
 			<Route element={<SpotifyPlayer/>}>
 				<Route element={<Application/>}>
 					<Route path="/" element={<Home/>}/>
+					<Route path="/:type" element={<Search/>}/>
 				</Route>
 			</Route>
 			

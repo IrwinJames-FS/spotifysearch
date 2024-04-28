@@ -1,10 +1,16 @@
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import { ArtistItem } from "./types";
-import { DetailsList, Image, T, Title } from "./common.ui";
+import { DetailsList, Fx, Image, T, Title } from "./common.ui";
 import { commafy } from "../../utils/strings";
+import { TconButton } from "../TconButton";
+import { playIt } from "../../utils/api";
+import { PlayArrow } from "@mui/icons-material";
 
-export const ArtistDetail: FC<ArtistItem> = ({images, name, followers, genres, popularity, ...rest}) => {
-	console.log(rest);
+export const ArtistDetail: FC<ArtistItem> = ({images, name, followers, genres, popularity, device_id, uri, ...rest}) => {
+	//The api says it accept artists as context_uris however there is little to no documentation on how that works. Therefore I am not sure if this will do anything
+	const playNow = useCallback(()=>{
+		playIt(device_id, {context_uri: uri})
+	}, [device_id, uri])
 	return (<>
 	<Title>
 		<Image {...{images, size: 'lg'}}/>
@@ -13,6 +19,9 @@ export const ArtistDetail: FC<ArtistItem> = ({images, name, followers, genres, p
 			<T><b>Followers</b> {commafy(`${followers.total}`)}</T>
 			<T><b>Popularity</b> {popularity}</T>
 			<T><b>Genres</b> {genres.join(', ')}</T>
+			<Fx row slim>
+				<TconButton title="Play now" onClick={playNow}><PlayArrow/></TconButton>
+			</Fx>
 		</DetailsList>
 	</Title>
 	</>)

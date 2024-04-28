@@ -2,34 +2,34 @@ import { Theme, useMediaQuery } from "@mui/material"
 import { useEffect, useState } from "react";
 
 
-
-export const useBreakpoint = (): 'xs' | 'sm' | 'md' | 'lg' | 'xl' => {
-	const xlu = useMediaQuery<Theme>(theme=>theme.breakpoints.up('xl'));
-	const lgu = useMediaQuery<Theme>(theme=>theme.breakpoints.up('lg'));
-	const mdu = useMediaQuery<Theme>(theme=>theme.breakpoints.up('md'));
-	const smu = useMediaQuery<Theme>(theme=>theme.breakpoints.up('sm'));
-	if(xlu) return 'xl';
-	if(lgu) return 'lg';
-	if(mdu) return 'md';
-	if(smu) return 'sm';
-	return 'xs';
+type BreakPoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+const pemdas:BreakPoint[] = ['xl', 'lg', 'md', 'sm', 'xs']; //the order of operations
+export const useBreakpoint = (keys: Set<BreakPoint> = new Set(pemdas)): BreakPoint => {
+	const sizes:Record<BreakPoint, boolean> = {
+		xl:useMediaQuery<Theme>(theme=>theme.breakpoints.up('xl')),
+		lg:useMediaQuery<Theme>(theme=>theme.breakpoints.up('lg')),
+		md:useMediaQuery<Theme>(theme=>theme.breakpoints.up('md')),
+		sm:useMediaQuery<Theme>(theme=>theme.breakpoints.up('sm')),
+		xs:true, //everything is xs 
+	}
+	for (const i of pemdas){ //this enforces the order
+		if(!keys.has(i)) continue
+		if(sizes[i]) return i;
+	}
+	return 'xs'; //if all else fails
 }
 
-type BreakPointActions<T> = {
-	xs?: ()=>T
-	sm?: ()=>T
-	md?: ()=>T
-	lg?: ()=>T
-	xl?: ()=>T
+type BreakPointFetcher<T> = ()=>T
+type BreakPointValue<T> = T | BreakPointFetcher<T>
+
+type BreakPointRecord<T> = Record<BreakPoint, BreakPointValue<T>>
+type BreakPointActions<T> = Pick<BreakPointRecord<T>, "xs"> & Partial<BreakPointRecord<T>> //xs is the fallthrough
+
+
+export const useBreakPointValue = <T>(actions: BreakPointActions<T>):T => {
+	const bk = useBreakpoint(new Set(Object.keys(actions) as BreakPoint[]));
+	const action = actions[bk]!;
+
+	return typeof actions === 'function' ? (action as BreakPointFetcher<T>)():action as T;
 }
-export const useBreakPointValue = <T>(actions: BreakPointActions<T>, defaultValue: T) => {
-	const [v, setV] = useState<T>(defaultValue);
-	const bk = useBreakpoint();
-	useEffect(()=>{
-		if (bk in actions) {
-			const v = actions[bk]!()
-			setV(v);
-		}
-	}, [bk, setV, actions]);
-	return v
-}
+

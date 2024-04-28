@@ -22,7 +22,7 @@ export const ax = {
 	post: (url: string, token: string, params?: Record<string,any>, body?: Record<string, any>) => axios.post(bl`${url}${params}`, body, authToken(token)).then(r=>r.data),
 	put: (url: string, token: string, params?:Record<string, any>, body?: Record<string, any>) => axios.put(bl`${url}${params}`, body, authToken(token)).then(r=>r.data)
 }
-export const searchSpotify = (q:string, token:string, types:string[]=['artist','album','playlist','track','show','episode','audiobook'] ) => ax.get('/search', token, {q, type: types.join(',')});
+export const searchSpotify = (q:string, token:string, type:string[]=['artist','album','playlist','track','show','episode','audiobook'], limit:number=20) => ax.get('/search', token, {q, type:type.join(','), limit});
 
 export const nextSpotifyResult = (uri: string, token:string) => axios.get(uri, authToken(token)).then(r=>r.data);
 

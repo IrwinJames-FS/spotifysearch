@@ -1,5 +1,5 @@
 
-import { Box as MuiBox, Card as MuiCard, CardContent as MuiCardContent, CardActionArea as MuiCardActionArea, Theme, styled, Typography, Divider, Stack } from "@mui/material";
+import { Box as MuiBox, Card as MuiCard, CardContent as MuiCardContent, CardActionArea as MuiCardActionArea, Theme, styled, Typography, Divider, Stack, CardProps } from "@mui/material";
 import { Flex } from "../Flex";
 import { FC, ReactNode } from "react";
 import { Image } from "../Image";
@@ -10,13 +10,27 @@ export const Img = styled(Image)({
 	width: '100%'
 })
 
-export const Card = styled(MuiCard)(({theme})=>({ 
+export const CardComponent = styled(MuiCard)(({theme})=>({ 
 	flexShrink: 0,
 	display: 'flex', 
 	justifyContent: 'flex-start',
 	width: theme.constants.gridCellWidth,
 	height: theme.constants.gridCellHeight
 }));
+
+export const Card: FC<CardProps> = ({sx={}, ...props}) => {
+	return <CardComponent {...{sx:{
+		width: {
+			xs: 128,
+			md: 256
+		},
+		height: {
+			xs: 128,
+			md: 256
+		},
+		...sx
+	},...props}}/>
+}
 
 export const CardContent = styled(MuiCardContent)({
 	flexGrow: 1,

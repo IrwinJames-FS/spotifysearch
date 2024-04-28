@@ -8,6 +8,7 @@ export const scripter = (src: string, id: string = "") => {
 	const script = document.createElement("script");
 	script.src = src;
 	script.async = true;
+	script.defer = true;
 	script.id = id
 	document.body.appendChild(script);
 }

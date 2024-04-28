@@ -6,10 +6,11 @@ import { ApiError } from '../../errors';
 const router = Router();
 
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
-	const { q } = req.query;
+	const { q, type, limit } = req.query;
 	try {
+		console.log(type);
 		const user = req.user as UserDocument;
-		const data = await searchSpotify(q as string, user.accessToken);
+		const data = await searchSpotify(q as string, user.accessToken, type as string[] | undefined, limit ? parseInt(limit as string):undefined);
 		return res.status(200).json(data);
 	} catch (error) {
 		const e = error as AxiosError
@@ -19,7 +20,6 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 
 router.get('/next', async (req: Request, res: Response, next: NextFunction) => {
 	const { uri } = req.query;
-	console.log(uri);
 	if(!uri) return res.status(400).json({message: 'No uri was provided'})
 	try {
 		const user = req.user as UserDocument;

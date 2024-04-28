@@ -43,7 +43,7 @@ export const Application = () => {
 		}
 		if(!user) return
 		//calculate the time until expiration
-		const diff = 3e4;
+		const diff = user.expires-Date.now()-1e3;
 		timer.current = setTimeout(async () => {
 			console.log("refreshing");
 			const {user} = await refresh();

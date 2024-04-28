@@ -40,6 +40,6 @@ export const PlaylistDetail: FC<PlaylistItem> = ({name, description, images, tra
 			</Stack>
 		</Stack>
 	</Title>
-	<TrackTable tracks={hydratedTracks} context={uri} length={tracks.total} device_id={device_id}/>
+	<TrackTable tracks={hydratedTracks} context={uri} length={tracks.total}/>
 	</>);
 }
