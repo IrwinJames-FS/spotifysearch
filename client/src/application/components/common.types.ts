@@ -43,6 +43,7 @@ export type AlbumResult = ResultItem & {
 	available_markets: string[]
 	release_date: string
 	total_tracks: number
+	artists: ArtistResult[]
 }
 
 export type HydradedAlbumResult = AlbumResult & {

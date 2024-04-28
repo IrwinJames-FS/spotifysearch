@@ -24,8 +24,10 @@ export const PlayButton: FC<PlayButtonProps> = ({placement, contextUri:context_u
 	const {device_id, playerState, player} = useSpotifyPlayer();
 	const isPlaying = useMemo(()=>{
 		if(!playerState?.track_window.current_track.uri) return false;
+		if((!uris && !offset) && context_uri && context_uri === playerState.context.uri) return true;
 		return offset?.uri === playerState?.track_window.current_track.uri
-	}, [playerState, offset?.uri])
+	}, [playerState, context_uri, offset, uris]);
+	
 	const playNow = useCallback(()=>{
 		if(isPlaying) return player?.togglePlay();
 		playIt(device_id!, {context_uri, uris, offset});

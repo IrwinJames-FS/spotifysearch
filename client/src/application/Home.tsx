@@ -28,7 +28,7 @@ export const Home = () => {
 		if(!user) return undefined;
 		const q = query.trim();
 		if(!q) return undefined;
-		return await search(q);
+		return await search(q, ['artist','album','playlist','track','show','episode','audiobook']);
 	}, [query, user]));
 
 	const keys: (keyof SearchResult)[] | undefined = useMemo(()=>{

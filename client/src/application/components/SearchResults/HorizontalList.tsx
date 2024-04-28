@@ -23,7 +23,6 @@ export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultI
 	const cellWidth = useMemo(()=>gWidth+8, [gWidth]);
 	const maxVis = useMemo(()=>Math.ceil(width/gWidth+bf), [width, gWidth, bf])
 	const [{start, end}, setBounds] = useState<{start: number, end: number}>({start: 0, end: 0});
-
 	const updatePointers = useCallback(()=> {
 		if(!ref.current) return;
 		const s = Math.floor(ref.current.scrollLeft/cellWidth);
@@ -32,14 +31,14 @@ export const HorizontalList: FC<{title: string, group: SearchResultGroup<ResultI
 		setBounds({start, end});
 	}, [cellWidth, bf, maxVis])
 
-	const onScroll: UIEventHandler<HTMLDivElement> = useCallback((e)=>{
+	const onScroll: UIEventHandler<HTMLDivElement> = useCallback(async (e)=>{
 		updatePointers();
-		if(loading || !grp) return;
+		if( loading || !grp) return;
 		const tl = e.currentTarget.scrollLeft+e.currentTarget.clientWidth;
 		const ttl = e.currentTarget.scrollWidth-loadOffset;
 		if(tl >= ttl) {
 			console.log("load more");
-			next(grp.next)
+			await next(grp.next);
 		}
 	}, [loadOffset, loading, grp, next, updatePointers]);
 

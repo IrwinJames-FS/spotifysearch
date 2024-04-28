@@ -1,4 +1,4 @@
-import { FC, UIEvent, UIEventHandler, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AutoItem, ResultItem, SearchResultGroup } from "../common.types";
 import { Box, Card, Stack, Toolbar, Typography, capitalize, useTheme } from "@mui/material";
 import { Flex } from "../Flex";
@@ -6,7 +6,6 @@ import { ResultCell } from "./ResultCell";
 import { useResultGroup } from "../../hooks/useResultGroup";
 import { CardActionArea } from "./common";
 import { Refresh } from "@mui/icons-material";
-import { getItem, play } from "../../utils/api";
 import { usePlayer } from "../Player";
 import { useDetails } from "../../DetailContainer";
 import { useBreakPointValue } from "../../hooks/useBreakPoint";
@@ -37,12 +36,15 @@ export const VerticalList: FC<{title: string, group: SearchResultGroup<AutoItem>
 	}, [cellWidth, bf])
 
 	//No point in using current target since I have cached a reference of t he element
-	const onScroll = useCallback(()=>{
+	const onScroll = useCallback(async ()=>{
 		updatePointers();
-		if(loading || !grp || !ref.current) return;
+		if( loading || !grp || !ref.current) return;
 		const tl = ref.current.scrollTop+ref.current.clientHeight;
 		const ttl = ref.current.scrollHeight-loadOffset;
-		if(tl >= ttl) next(grp.next);
+		if(tl >= ttl) {
+			console.log("fetching next");
+			await next(grp.next);
+		}
 	}, [loadOffset, loading, grp, next, updatePointers]);
 
 	

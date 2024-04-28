@@ -50,7 +50,8 @@ export const Application = () => {
 			setUser({loading: false, data:user});
 			setToken(user.accessToken);
 			timer.current = null;
-		}, diff); //every 30 seconds for now
+			console.log('refreshing');
+		}, diff); //every 10 seconds
 	}, [user, setUser, setToken])
 	
 	

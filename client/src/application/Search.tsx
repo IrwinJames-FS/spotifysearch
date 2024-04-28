@@ -31,7 +31,7 @@ export const Search = () => {
 		if(!user) return undefined;
 		const q = query.trim();
 		if(!q) return undefined;
-		const res = await search(q, [type], 5);
+		const res = await search(q, [type], 50);
 		return res;
 	}, [query, user, type]));
 

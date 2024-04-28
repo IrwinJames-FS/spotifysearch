@@ -10,8 +10,8 @@ const bl = (strings: TemplateStringsArray, ...args:any[]): string => {
 }
 export const getSelf = () => axios.get(`${BASE_URL}/auth/self`, {withCredentials: true}).then(r=>r.data);
 
-export const search = (q: string, type: string[] | undefined=undefined, limit:number=20) : Promise<SearchResult> => axios.get(`${BASE_URL}/search?${qs.stringify({q, type, limit})}`, {withCredentials: true}).then(r=>r.data);
-export const forwardUri = (uri:string) => axios.get(bl`/search/next?${qs.stringify({uri})}`, {withCredentials:true}).then(r=>r.data);
+export const search = (q: string, type: string[] | undefined=undefined, limit:number=20) : Promise<SearchResult> => axios.get(`${BASE_URL}/spot/search?${qs.stringify({q, type:type?.join(','), limit})}`, {withCredentials: true}).then(r=>r.data);
+export const forwardUri = (uri:string) => axios.get(bl`/pass?${qs.stringify({uri})}`, {withCredentials:true}).then(r=>r.data);
 export const next = <T extends ResultItem>(uri:string): Promise<SearchResultGroup<T>> => forwardUri(uri).then(d=>{
 	const k = Object.keys(d)[0]
 	return d[k];
@@ -31,10 +31,11 @@ type PlayOptions = {
 		position?: number
 	}
 }
-export const playIt = (device_id: string, options: PlayOptions) => axios.put(bl`/player/play?${qs.stringify({device_id})}`, options).then(r=>r.data);
+export const playIt = (device_id: string, options: PlayOptions) => axios.put(bl`/spot/me/player/play?${qs.stringify({device_id})}`, options).then(r=>r.data);
 
-export const transfer = (device_id: string) => axios.put(`${BASE_URL}/player/transfer`, {
-	device_id
+export const transfer = (device_id: string) => axios.put(`${BASE_URL}/spot/me/player`, {
+	device_ids:[device_id],
+	play:true
 }, {withCredentials: true});
 
 export const refresh = () => axios.get(`${BASE_URL}/auth/refresh`, {withCredentials: true}).then(r=>r.data);
