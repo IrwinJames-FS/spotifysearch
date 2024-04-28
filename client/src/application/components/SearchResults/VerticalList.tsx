@@ -19,7 +19,7 @@ export const VerticalList: FC<{title: string, group: SearchResultGroup<AutoItem>
 	const [width, setWidth] = useState(0);
 	const gWidth = useBreakPointValue({xs: 128, md: 256});
 	const bf = useBreakPointValue({xs: 2, md: 4});
-	const loadOffset = useBreakPointValue({xs: 600, md: 900})
+	const loadOffset = useBreakPointValue({xs: 900})
 	const cellWidth = useMemo(()=>gWidth+8, [gWidth]);
 	const [{start, end}, setBounds] = useState<{start: number, end: number}>({start: 0, end: 0});
 
@@ -33,7 +33,6 @@ export const VerticalList: FC<{title: string, group: SearchResultGroup<AutoItem>
 		
 		const start = s <= bf ? 0:s-bf
 		const end = start + (maxV*rowSize);
-		console.log("s", s, start, end, maxV, rowSize);
 		setBounds({start, end});
 	}, [cellWidth, bf])
 
@@ -43,7 +42,6 @@ export const VerticalList: FC<{title: string, group: SearchResultGroup<AutoItem>
 		if(loading || !grp || !ref.current) return;
 		const tl = ref.current.scrollTop+ref.current.clientHeight;
 		const ttl = ref.current.scrollHeight-loadOffset;
-		console.log(tl, ttl)
 		if(tl >= ttl) {
 			console.log("load more");
 			next(grp.next)
