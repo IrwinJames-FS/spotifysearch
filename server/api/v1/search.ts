@@ -34,6 +34,7 @@ router.get('/next', async (req: Request, res: Response, next: NextFunction) => {
 
 router.get('/item/:type/:id', async (req: Request, res: Response, next: NextFunction) => {
 	const { type, id } = req.params;
+	console.log(req.user);
 	const user = req.user as UserDocument
 	if(!type || !id) return res.status(422).json({message: 'A type and id must be provided'});
 	try {

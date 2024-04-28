@@ -6,39 +6,58 @@ import { IUser, User, UserDocument, UserModel } from "../../models/User";
 import axios from "axios";
 import dotenv from "dotenv";
 import { Document } from "mongoose";
+import session from "express-session";
 dotenv.config();
 const cookieAuth = passport.authenticate('cookie', {session: false})
 const router = Router();
 
-router.get('/', passport.authenticate('spotify', {
-	scope: ['streaming', 'user-read-email', 'user-read-private', 'user-modify-playback-state', 'user-read-currently-playing', 'user-read-playback-state']
-}));
-
-router.get('/callback', passport.authenticate('spotify', {failureRedirect: 'http//localhost:3001/api/v1/auth', session: false}), (req: Request, res: Response)=> {
-	const user = req.user! as UserDocument
-	const cookie = {expires: new Date(user.expires), domain: 'localhost', path: '/', httpOnly:false}
-	console.log(req)
-	res.cookie('auth', user._id, cookie);
-	res.redirect(302, 'http://localhost:3001');
-});
-
-router.get('/signout', cookieAuth, (req, res) => {
-	res.clearCookie("auth");
-	res.redirect(302, 'http://localhost:3001');
-});
-
 /**
  * This will be a method to check if the user exists it will always return 200 however will only populate a user if the auth cookie is set.
  */
-router.get('/self', async (req, res) => {
-	const { auth } = req.cookies;
-	if(!auth) return res.status(200).json({user: null});
-	try {
-		const user = await User.findById(auth);
-		return res.status(200).json(user ? {user:{displayName: user.displayName, accessToken: user.accessToken, expires: user.expires}}:{user:null});
-	} catch (error) {
-		return res.status(500).json({message: (error as Error).message});
+type PassportSession = session.Session & Partial<session.SessionData> & {
+	referrer?: string
+	passport?: {
+		user: UserDocument
+	},
+	oldSessionData?: any
+}
+
+router.get('/', (req, res, next) => {
+	const {referrer} = req.query;
+	const session = req.session as PassportSession;
+	session.referrer = referrer as string | undefined;
+
+	session.save(err => {
+		if(err) console.log(err);
+		return next();
+	});
+}, passport.authenticate('spotify', {
+	scope: ['streaming', 'user-read-email', 'user-read-private', 'user-modify-playback-state', 'user-read-currently-playing', 'user-read-playback-state']
+}));
+
+router.get('/callback', (req, res, next) => {
+	const referrer = (req.session as PassportSession)?.referrer;
+	if(referrer) {
+		res.locals = {referrer};
 	}
+	return next();
+}, passport.authenticate('spotify', {failureRedirect: 'http//localhost:3001/api/v1/auth'}), (req: Request, res: Response)=> {
+	const user = req.user! as UserDocument
+	
+	const referrer = res.locals.referrer ?? 'http://localhost:3001';
+	res.redirect(302, referrer);
+});
+
+router.get('/signout', (req, res) => {
+	if (req.session) req.session.destroy(err=>console.log("Destroy Error:", err));
+	const {referrer} = req.query;
+	res.redirect(302, (referrer as string) ?? 'http://localhost:3001');
+});
+
+
+router.get('/self', async (req, res) => {
+	const user = (req.session as PassportSession)?.passport?.user;
+	return res.status(200).json(user ? {user:{displayName: user.displayName, accessToken: user.accessToken, expires: user.expires}}:{user:null});
 });
 
 const { CLIENT_ID, CLIENT_SECRET } = process.env;
@@ -58,7 +77,6 @@ router.get('/refresh', cookieAuth, async (req, res) => {
 				'Authorization': `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`
 			}
 		});
-		console.log(data);
 		user.accessToken = data.access_token
 		user.expires = new Date().getTime()+(data.expires_in*1e3);
 		const updatedUser = await user.save();

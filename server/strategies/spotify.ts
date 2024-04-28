@@ -17,3 +17,11 @@ passport.use(new Strategy({
 	}
 }));
 
+//tell passport how to serialize and deserialize a user
+passport.serializeUser((user, done) => {
+	return done(null, user);
+});
+passport.deserializeUser((user, done)=>{
+	return done(null, user as Express.User);
+})
+

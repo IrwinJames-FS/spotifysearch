@@ -9,9 +9,9 @@ const cookieAuth = passport.authenticate('cookie', {session: false})
 const router = Router();
 
 router.use('/auth', Auth);
-router.use('/search', cookieAuth, Search);
-router.use('/player', cookieAuth, Player);
+router.use('/search', passport.session(), Search);
+router.use('/player', passport.session(), Player);
 
 //This is kind of like a pass through router to give more front end access to the api
-router.use('/spot', cookieAuth, Spot)
+router.use('/spot', passport.session(), Spot)
 export default router;

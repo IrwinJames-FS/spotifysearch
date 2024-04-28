@@ -5,9 +5,8 @@ import { AxiosError } from "axios";
 
 const router = Router();
 router.put('/', async (req, res) => {
-	console.log(req.body);
 	const {context_uri, uri, device_id} = req.body;
-	
+	console.log(req.user);
 	try {
 		const user = req.user as UserDocument;
 		const data = await playSpotifyUri(context_uri, uri, device_id, user.accessToken)

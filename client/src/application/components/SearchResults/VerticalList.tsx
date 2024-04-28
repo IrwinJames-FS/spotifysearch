@@ -42,10 +42,7 @@ export const VerticalList: FC<{title: string, group: SearchResultGroup<AutoItem>
 		if(loading || !grp || !ref.current) return;
 		const tl = ref.current.scrollTop+ref.current.clientHeight;
 		const ttl = ref.current.scrollHeight-loadOffset;
-		if(tl >= ttl) {
-			console.log("load more");
-			next(grp.next)
-		}
+		if(tl >= ttl) next(grp.next);
 	}, [loadOffset, loading, grp, next, updatePointers]);
 
 	
@@ -84,7 +81,7 @@ export const VerticalList: FC<{title: string, group: SearchResultGroup<AutoItem>
 			<Typography variant="h4">{capitalize(title)} - ({group.total})</Typography>
 		</Toolbar>
 	</Card>
-	<Stack direction="row" justifyContent="center" flexWrap="wrap" gap={1} overflow="scroll" onScroll={onScroll} ref={ref} sx={{ bgcolor: '#F00', height:'calc(100dvh - 8rem)', overflowY:'scroll'}}>
+	<Stack direction="row" justifyContent="center" flexWrap="wrap" gap={1} overflow="scroll" onScroll={onScroll} ref={ref} sx={{ height:'calc(100dvh - 8rem)', overflowY:'scroll'}}>
 		{data.map((item, i)=><ResultCell item={item} key={i}/>)}
 		{error && <Card>
 			<CardActionArea>

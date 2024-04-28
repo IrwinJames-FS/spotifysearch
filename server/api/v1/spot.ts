@@ -10,6 +10,7 @@ router.get('/*', async (req, res, next) => {
 	const ex = (req.params as Record<string,string>)['0']
 	const query = Object.keys(req.query).length ? req.query:undefined
 	console.log(ex, req.params, typeof req.params, query);
+	console.log(req.user)
 	if(!ex) return next(new ApiError('Invalid params provided', 422));
 	try {
 		const data = await ax.get('/'+ex, (req.user! as UserDocument).accessToken, query)
