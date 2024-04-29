@@ -12,6 +12,7 @@ export type SpotifyPlayerContextState = {
 
 export type SpotifyPlayerContextMethods = {
 	setToken: (token: string)=>void
+	updateQueue: ()=>void
 }
 
 export type SpotifyQueue = {

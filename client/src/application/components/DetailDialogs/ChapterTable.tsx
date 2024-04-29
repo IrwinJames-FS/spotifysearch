@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { TrackResultLite } from "../common.types";
+import { ChapterResult, TrackResultLite } from "../common.types";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { dx } from "../../utils/dx";
 import { PlayButton } from "../PlayButton";
@@ -7,7 +7,7 @@ import { TR } from "../TR";
 import { LoadingList } from "./common.ui";
 import { EnqueueButton } from "../EnqueueButton";
 
-export const TrackTable: FC<{tracks?:TrackResultLite[], context:string, length:number}> = ({tracks, length, context}) => {
+export const ChapterTable: FC<{chapters?:ChapterResult[], context:string, length:number}> = ({chapters, length, context}) => {
 	return (<TableContainer>
 		<Table>
 			<TableHead>
@@ -19,7 +19,7 @@ export const TrackTable: FC<{tracks?:TrackResultLite[], context:string, length:n
 				</TableRow>
 			</TableHead>
 			<TableBody>
-				{!!tracks ? tracks?.map((track, i) => <TR index={i} key={i}>
+				{!!chapters ? chapters?.map((track, i) => <TR index={i} key={i}>
 					<TableCell sx={{textAlign: 'center'}}>{i+1}</TableCell>
 					<TableCell>{track.name}</TableCell>
 					<TableCell sx={{textAlign: 'center'}}>{dx(track.duration_ms*10)}</TableCell>

@@ -46,9 +46,15 @@ router.get('/callback', (req, res, next) => {
 });
 
 router.get('/signout', (req, res) => {
-	if (req.session) req.session.destroy(err=>console.log("Destroy Error:", err));
+	if (!req.session) return res.status(401).json({message: "Not Authorized"});
 	const {referrer} = req.query;
-	res.redirect(302, (referrer as string) ?? 'http://localhost:3001');
+	return req.session.destroy(err=>{
+		if(err) {
+			console.log("Signout error");
+			return res.status(500).json({message:"We are looking into it"});
+		}
+		return res.redirect(302, (referrer as string) ?? 'http://localhost:3001');
+	});
 });
 
 

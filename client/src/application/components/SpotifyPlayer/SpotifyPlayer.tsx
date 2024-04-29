@@ -33,6 +33,10 @@ export const SpotifyPlayer: FC<ParentElement> = memo(({children}) => {
 		setToast({open:false})
 	}, [setToast])
 
+	const updateQueue = useCallback(async ()=>{
+		const queue = await getQueue();
+		setQueue(queue);
+	}, [setQueue])
 	const onReady = useCallback(async ({device_id}:{device_id:string})=>{
 		let item = sessionStorage.getItem('spotify-device-id');
 		if(item && item !== device_id) {
@@ -42,12 +46,12 @@ export const SpotifyPlayer: FC<ParentElement> = memo(({children}) => {
 				console.log(error);
 				setError(new TransferPlaybackError("Failed to transfer playback"))
 			}
-			
 		}
 		sessionStorage.setItem('spotify-device-id', device_id)
 		setStatus(true, device_id)
 	},[setStatus]);
 	const onNotReady = useCallback(({device_id}: {device_id:string})=>{
+		sessionStorage.removeItem('spotify-device-id');
 		setStatus(true, device_id);
 	}, [setStatus])
 	const onStateChange = useCallback( async (state:Spotify.PlaybackState)=>{
@@ -84,7 +88,6 @@ export const SpotifyPlayer: FC<ParentElement> = memo(({children}) => {
 			setSDKReady();
 		}
 	}, [setSDKReady]);
-
 	useEffect(()=>{
 		if(!token) return;
 		if(!sdkReady) return;
@@ -101,6 +104,9 @@ export const SpotifyPlayer: FC<ParentElement> = memo(({children}) => {
 		setPlayer(player);
 		if(window.spotifyPlayer) {
 			player._options.getOAuthToken = cb=>cb(token ?? ''); //update auth method
+			console.log(player)
+			const device_id = sessionStorage.getItem('spotify-device-id');
+			if(device_id) setDeviceId(device_id);
 		}
 		window.spotifyPlayer = player;
 		return () => {
@@ -113,7 +119,7 @@ export const SpotifyPlayer: FC<ParentElement> = memo(({children}) => {
 		}
 	}, [token, sdkReady, setPlayer, onReady, onNotReady, onInitError, onAuthError, onAccountError, onPlaybackError, onStateChange]);
 
-	return (<SpotifyPlayerContext.Provider value={{sdkReady, status, device_id, player, playerState, queue, setToken}}>
+	return (<SpotifyPlayerContext.Provider value={{sdkReady, status, device_id, player, playerState, queue, setToken, updateQueue}}>
 		<Outlet/>
 		<Toast {...toastProps} onClose={closeToast}/>
 	</SpotifyPlayerContext.Provider>);

@@ -1,6 +1,6 @@
 import { FC, useCallback } from "react";
 import { EpisodeItem } from "./types";
-import { DetailsList, Fx, Image, T, Title } from "./common.ui";
+import { Clx, DetailsList, Fx, Image, T, Title } from "./common.ui";
 import { dx } from "../../utils/dx";
 import { PlayButton } from "../PlayButton";
 import { useAsync } from "../../hooks";
@@ -8,9 +8,11 @@ import { ShowResult } from "../common.types";
 import { getItem } from "../../utils/api";
 import { DialogContent } from "@mui/material";
 import { EpisodeTable } from "./EpisodeTable";
+import { DetailHeader } from "./DetailHeader";
+import { redate } from "../../utils/strings";
 
-export const EpisodeDetails: FC<EpisodeItem> = ({name, description, duration_ms, images, uri, show, ...rest}) => {
-	const [loading, error, hydratedShow] = useAsync<ShowResult>(useCallback(async ()=>{
+export const EpisodeDetails: FC<EpisodeItem> = ({name, description, duration_ms, images, uri, show, release_date, ...rest}) => {
+	const [,, hydratedShow] = useAsync<ShowResult>(useCallback(async ()=>{
 		if(!show?.id) return;
 		try {
 			const s = await getItem('show', show.id);
@@ -20,19 +22,17 @@ export const EpisodeDetails: FC<EpisodeItem> = ({name, description, duration_ms,
 			console.log(error);
 		}
 	}, [show?.id]))
-	console.log(show, rest)
 	return (<>
-	<Title>
-		<Image {...{images, size: 'lg'}}/>
-		<DetailsList>
-			<T>{name}</T>
+	<DetailHeader {...{images, name}}>
+		<Fx row>
+			<PlayButton contextUri={show!.uri} offset={{uri}}/>
+		</Fx>
+		<T>{name} - {redate(release_date)}</T>
+		<T>{dx(duration_ms*10)}</T>
+		<Clx title="Description:">
 			<T>{description}</T>
-			<T>{dx(duration_ms*10)}</T>
-			<Fx row>
-				<PlayButton contextUri={show!.uri} offset={{uri}}/>
-			</Fx>
-		</DetailsList>
-	</Title>
+		</Clx>
+	</DetailHeader>
 	<DialogContent>
 		<EpisodeTable episodes={hydratedShow?.episodes.items} length={show?.total_episodes} context={show?.uri}/>
 	</DialogContent>

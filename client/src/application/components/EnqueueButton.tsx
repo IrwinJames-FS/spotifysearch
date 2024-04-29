@@ -9,16 +9,17 @@ export type EnqueueButtonProps = {
 	uris: string | string[]
 }
 export const EnqueueButton: FC<EnqueueButtonProps> = ({placement, uris}) => {
-	const { device_id } = useSpotifyPlayer();
+	const { device_id, updateQueue } = useSpotifyPlayer();
 	const onClick = useCallback(async () => {
 		const uis: string[] = Array.isArray(uris) ? uris:[uris];
 		try{
 			for (let uri of uis) {
 				await addToQueue(uri, device_id!)
 			}
+			await updateQueue();
 		} catch (error) {
 			console.log("Display a toast");
 		}
-	}, [uris])
-	return <TconButton title="Add to queue" placement={placement} onClick={onClick}><Add/></TconButton>
+	}, [uris, device_id, updateQueue])
+	return <TconButton title="Add to queue" placement={placement} onClick={onClick} disabled={!device_id}><Add/></TconButton>
 }

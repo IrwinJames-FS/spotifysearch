@@ -4,7 +4,7 @@ import { Skeleton, Theme } from "@mui/material";
 import { WidgetProps } from "./types";
 
 export const WidgetImage: FC<WidgetProps> = ({state, expanded}) => {
-	const images = state?.track_window?.current_track.album.images
+	const images = state?.track_window?.current_track?.album?.images
 	const s = useMemo(()=>expanded ? 128:64, [expanded]);
 	return images ? (<Image {...{
 		images, 

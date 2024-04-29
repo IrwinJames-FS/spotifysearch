@@ -7,7 +7,6 @@ import { TR } from "../TR";
 import { PlayButton } from "../PlayButton";
 
 export const EpisodeTable: FC<{episodes?:EpisodeResult[], length?: number, context?: string}> = ({episodes, length=0, context}) => {
-	console.log(episodes)
 	return (<TableContainer>
 		<Table>
 			<TableHead>

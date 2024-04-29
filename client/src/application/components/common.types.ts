@@ -25,6 +25,27 @@ export type SearchResultGroup<T> = {
 	total: number
 }
 
+export type ChapterResult = {
+	audio_preview_url: string
+	available_markets: string[]
+	chapter_number: number
+	description: string
+	html_description: string
+	duration_ms: number
+	explicit: boolean
+	is_playable: boolean
+	languages: string[]
+	release_date: string
+	resume_point?: {
+		fully_played: boolean
+		resume_position_ms: number
+	}
+	audiobook: AudioBookResult
+} & ResultItem
+export type CopyrightResult = {
+	text: string,
+	type: string
+}
 export type ResultItem = {
 	external_urls: ExternalUrls
 	href: string
@@ -33,6 +54,7 @@ export type ResultItem = {
 	type: ResultType
 	uri: string
 	images?: ImageResult[]
+	copyrights: CopyrightResult[]
 }
 
 export type AutoItem = AlbumResult | ArtistResult | AudioBookResult | EpisodeResult | PlaylistResult | ShowResult | TrackResult;
@@ -44,6 +66,7 @@ export type AlbumResult = ResultItem & {
 	release_date: string
 	total_tracks: number
 	artists: ArtistResult[]
+	popularity: number
 }
 
 export type HydradedAlbumResult = AlbumResult & {
@@ -73,7 +96,8 @@ export type AudioBookResult = ResultItem & {
 	narrators: AuthorResult[]
 	publisher: string
 	total_chapters: number
-	type: 'audiobook'
+	type: 'audiobook',
+	chapters: SearchResultGroup<ChapterResult>
 }
 
 export type EpisodeResult = ResultItem & {
