@@ -8,6 +8,7 @@ import proxy from 'express-http-proxy';
 import cors from 'cors';
 import session from 'express-session';
 import MongoStore from 'connect-mongodb-session';
+import passport from 'passport';
 const MongoDBStore = MongoStore(session);
 dotenv.config();
 const app = express();
@@ -23,6 +24,7 @@ app.set('trust proxy', 1);
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
+app.use(passport.initialize());
 
 const store = new MongoDBStore({
 	uri: MONGO as string,
