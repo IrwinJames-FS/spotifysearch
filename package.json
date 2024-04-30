@@ -14,6 +14,7 @@
     "dev": "concurrently \"npm run watch --prefix ./server\" \"BROWSER=none npm start --prefix ./client\" \"open http://localhost:3001\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "proxy": "http://localhost:3001",
   "keywords": [],
   "author": "",
   "license": "ISC",
