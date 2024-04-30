@@ -1,5 +1,5 @@
 import { Error } from "@mui/icons-material";
-import { Toolbar, Typography, Button, CircularProgress, Card, CardContent, Stack } from "@mui/material";
+import { Toolbar, Typography, CircularProgress, Card, CardContent, Stack } from "@mui/material";
 import { useApplication } from "./Application";
 import { SearchField, Topbar, UserButton } from "./components";
 import { useCallback, useMemo } from "react";
@@ -10,6 +10,7 @@ import { Flex } from "./components/Flex";
 import { HorizontalList } from "./components/SearchResults";
 import { useLocation, useNavigate } from "react-router-dom";
 import qs from 'qs';
+import { FilterButton } from "./components/FilterButton";
 
 const useQuery = (key: string) => {
 	const { search } = useLocation()
@@ -39,6 +40,7 @@ export const Home = () => {
 	<Topbar>
 		<Toolbar disableGutters>
 			{user && <SearchField {...{onSearch}}/>}
+			<FilterButton title="Everything"/>
 			<UserButton/>
 		</Toolbar>
 	</Topbar>

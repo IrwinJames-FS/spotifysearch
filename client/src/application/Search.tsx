@@ -1,5 +1,5 @@
 import { Error } from "@mui/icons-material";
-import { Toolbar, Typography, Button, CircularProgress, Card, CardContent, Stack } from "@mui/material";
+import { Toolbar, Typography, Button, CircularProgress, Card, CardContent, Stack, capitalize } from "@mui/material";
 import { useApplication } from "./Application";
 import { SearchField, Topbar, UserButton } from "./components";
 import { useCallback, useMemo } from "react";
@@ -10,6 +10,7 @@ import { Flex } from "./components/Flex";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import qs from 'qs';
 import { VerticalList } from "./components/SearchResults/VerticalList";
+import { FilterButton } from "./components/FilterButton";
 
 const useQuery = (key: string) => {
 	const { search } = useLocation()
@@ -19,7 +20,6 @@ const useQuery = (key: string) => {
 export const Search = () => {
 	const type = useParams().type as ResultType;
 	const t = type+'s'
-	console.log(type);
 	const {user} = useApplication();
 	const navigate = useNavigate();
 	let query = useQuery("q")
@@ -39,6 +39,7 @@ export const Search = () => {
 	<Topbar>
 		<Toolbar disableGutters>
 			{user && <SearchField {...{onSearch}}/>}
+			<FilterButton title={capitalize(type)+'s'}/>
 			<UserButton/>
 		</Toolbar>
 	</Topbar>

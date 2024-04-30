@@ -83,7 +83,7 @@ export const VerticalList: FC<{title: string, group: SearchResultGroup<AutoItem>
 			<Typography variant="h4">{capitalize(title)} - ({group.total})</Typography>
 		</Toolbar>
 	</Card>
-	<Stack direction="row" justifyContent="center" flexWrap="wrap" gap={1} overflow="scroll" onScroll={onScroll} ref={ref} sx={{ height:'calc(100dvh - 8rem)', overflowY:'scroll'}}>
+	<Stack direction="row" justifyContent="center" flexWrap="wrap" alignContent="flex-start" gap={1} overflow="scroll" onScroll={onScroll} ref={ref} sx={{ height:'calc(100dvh - 8rem)', overflowY:'scroll'}}>
 		{data.map((item, i)=><ResultCell item={item} key={i}/>)}
 		{error && <Card>
 			<CardActionArea>

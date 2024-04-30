@@ -15,10 +15,11 @@ router.get('/*', async (req, res, next) => {
 		return res.status(200).json(data);
 	} catch (error) {
 		const e = error as AxiosError
-		console.log("There was an error", e.request.path);
+		console.log("There was an error", e.request.path, e.response?.data);
 		return next(new ApiError(e.message, e.response?.status))
 	}
 });
+
 router.post('/*', async (req, res, next) => {
 	const ex = (req.params as Record<string,string>)['0']
 	const query = Object.keys(req.query).length ? req.query:undefined;
