@@ -10,6 +10,7 @@ import { DialogContent } from "@mui/material";
 import { EpisodeTable } from "./EpisodeTable";
 import { DetailHeader } from "./DetailHeader";
 import { redate } from "../../utils/strings";
+import { useSpoty } from "../../Spoty/SpotyContext";
 
 export const EpisodeDetails: FC<EpisodeItem> = ({name, description, duration_ms, images, uri, show, release_date, ...rest}) => {
 	const [,, hydratedShow] = useAsync<ShowResult>(useCallback(async ()=>{
@@ -21,14 +22,15 @@ export const EpisodeDetails: FC<EpisodeItem> = ({name, description, duration_ms,
 		} catch (error) {
 			console.log(error);
 		}
-	}, [show?.id]))
+	}, [show?.id]));
+	const { isLocal } = useSpoty();
 	return (<>
 	<DetailHeader {...{images, name}}>
-		<Fx row>
+		{isLocal && <Fx row>
 			<PlayButton contextUri={show!.uri} offset={{uri}}/>
-		</Fx>
+		</Fx>}
 		<T>{name} - {redate(release_date)}</T>
-		<T>{dx(duration_ms*10)}</T>
+		<T>{dx(duration_ms)}</T>
 		<Clx title="Description:">
 			<T>{description}</T>
 		</Clx>

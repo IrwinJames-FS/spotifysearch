@@ -18,7 +18,7 @@ export const SpotyProvider: FC<{config: SpotyConfig, children: ReactNode}> = ({c
 	const device_id = useMemo(()=>state?.device?.id, [state]);
 	const debounceMs = useMemo(()=>config.debounceMs ?? 5e2, [config]);
 	const [, playerError, player,, getPlayer, setPlayerError] = usePlayer(ax, config, refreshState);
-
+	const isLocal = useMemo(()=>config.product === 'premium', [config.product]);
 
 	//because all controls are handled via the web api the only thing I need from the player is its existence and the ability to run functions once it exists
 	const play = useCallback(async (args?:PlayArgs):Promise<void> => {
@@ -94,7 +94,19 @@ export const SpotyProvider: FC<{config: SpotyConfig, children: ReactNode}> = ({c
 	}, [updatePlayback, state, config, refreshState]);
 
 	return (<SCTX.Provider value={{
-		stateLoading, stateError, state, refreshState, togglePlay, seek, skipNext, skipPrev, play, pause, product: config.product, queue, playerError
+		stateLoading, 
+		stateError, 
+		state, 
+		refreshState, 
+		togglePlay, 
+		seek, 
+		skipNext, 
+		skipPrev, 
+		play, 
+		pause, 
+		product: config.product, 
+		queue, playerError, 
+		isLocal
 	}}>
 		{children}
 	</SCTX.Provider>)

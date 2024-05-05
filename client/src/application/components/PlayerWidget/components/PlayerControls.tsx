@@ -17,7 +17,7 @@ export const PlayerControls: FC<PlayerControlProps> = ({expanded, toggleVisible,
 	const btnSize = useMemo(()=>expanded ? 'medium':'small', [expanded]);
 	const name = useMemo(()=>state?.item?.name, [state])
 	const is_playing = useMemo(()=>state?.is_playing ?? false, [state]);
-	const [progress, setProgress] = useState((state?.progress_ms ?? 0)*10);
+	const [progress, setProgress] = useState((state?.progress_ms ?? 0));
 	const duration = useMemo(()=>state?.item?.duration_ms ?? 0, [state]);
 	const isSeeking = useRef<boolean>(false);
 

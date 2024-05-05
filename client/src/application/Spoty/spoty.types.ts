@@ -9,6 +9,7 @@ export type SpotyContext = {
 	state?: SpotyPlayerState
 	product?: 'free'|'premium'
 	queue?:Queue
+	isLocal: boolean
 } & SpotyMethods
 
 export type SpotyMethods = {

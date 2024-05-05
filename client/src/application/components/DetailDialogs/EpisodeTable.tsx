@@ -5,8 +5,10 @@ import { dx } from "../../utils/dx";
 import { Image, LoadingList } from "./common.ui";
 import { TR } from "../TR";
 import { PlayButton } from "../PlayButton";
+import { useSpoty } from "../../Spoty/SpotyContext";
 
 export const EpisodeTable: FC<{episodes?:EpisodeResult[], length?: number, context?: string}> = ({episodes, length=0, context}) => {
+	const { isLocal } = useSpoty();
 	return (<TableContainer>
 		<Table>
 			<TableHead>
@@ -15,7 +17,7 @@ export const EpisodeTable: FC<{episodes?:EpisodeResult[], length?: number, conte
 					<TableCell/>
 					<TableCell>Name</TableCell>
 					<TableCell>Time</TableCell>
-					<TableCell/>
+					{isLocal && <TableCell/>}
 				</TableRow>
 			</TableHead>
 			<TableBody>
@@ -23,10 +25,10 @@ export const EpisodeTable: FC<{episodes?:EpisodeResult[], length?: number, conte
 					<TableCell sx={{textAlign: 'center', width: 32}}>{i+1}</TableCell>
 					<TableCell><Image {...{images: track.images, size:'sm'}} sx={{width: 48, height: 48}}/></TableCell>
 					<TableCell>{track.name}</TableCell>
-					<TableCell>{dx(track.duration_ms*10)}</TableCell>
-					<TableCell>
+					<TableCell>{dx(track.duration_ms)}</TableCell>
+					{isLocal && <TableCell>
 						<PlayButton contextUri={context} offset={{uri: track.uri}}/>
-					</TableCell>
+					</TableCell>}
 				</TR>):<LoadingList {...{length}}/>}
 			</TableBody>
 		</Table>

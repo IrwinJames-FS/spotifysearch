@@ -1,29 +1,29 @@
-import { FC, useCallback, useMemo } from "react";
+import { FC, useCallback } from "react";
 import { PlaylistItem } from "./types";
-import { DialogContent, IconButton, Stack, TableContainer, Tooltip } from "@mui/material";
-import { Img } from "../ImageSlider";
-import { Clx, Fx, T, Title } from "./common.ui";
+import { DialogContent } from "@mui/material";
+import { Clx, Fx, T } from "./common.ui";
 import { useAsync } from "../../hooks";
-import { forwardUri, playIt } from "../../utils/api";
+import { forwardUri } from "../../utils/api";
 import { SearchResultGroup, TrackResult } from "../common.types";
 import { TrackTable } from "./TrackTable";
-import { PlayArrow } from "@mui/icons-material";
 import { DetailHeader } from "./DetailHeader";
 import { PlayButton } from "../PlayButton";
+import { useSpoty } from "../../Spoty/SpotyContext";
 type PlaylistTrackItem = {
 	track: TrackResult
 }
-export const PlaylistDetail: FC<PlaylistItem> = ({name, description, images, tracks, device_id, owner, uri, ...rest}) => {
+export const PlaylistDetail: FC<PlaylistItem> = ({name, description, images, tracks, owner, uri, ...rest}) => {
 	const [,, hydratedTracks] = useAsync<TrackResult[] | undefined>(useCallback(async ()=>{
 		if(!tracks.href) return undefined;
 		const trks = await forwardUri(tracks.href) as SearchResultGroup<PlaylistTrackItem>
 		return trks.items.map(item=>item.track)
 	}, [tracks]));
+	const { isLocal } = useSpoty();
 	return (<>
 	<DetailHeader {...{images, name}}>
-		<Fx justifyStart>
+		{isLocal && <Fx justifyStart>
 			<PlayButton contextUri={uri} placement="top"/>
-		</Fx>
+		</Fx>}
 		<T>{name} - {owner.display_name}</T>
 		{description && <Clx title="Description:">
 			<T>{description}</T>

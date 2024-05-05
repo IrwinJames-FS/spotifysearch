@@ -6,7 +6,6 @@ import { ResultCell } from "./ResultCell";
 import { useResultGroup } from "../../hooks/useResultGroup";
 import { CardActionArea } from "./common";
 import { Refresh } from "@mui/icons-material";
-import { usePlayer } from "../Player";
 import { useDetails } from "../../DetailContainer";
 import { useBreakPointValue } from "../../hooks/useBreakPoint";
 
@@ -14,7 +13,6 @@ export const VerticalList: FC<{title: string, group: SearchResultGroup<AutoItem>
 	const [loading, error, grp, next] = useResultGroup(group);
 	const {setDetails} = useDetails();
 	const ref = useRef<HTMLDivElement | null>(null);
-	const { device_id, setToast } = usePlayer();
 	const [width, setWidth] = useState(0);
 	const gWidth = useBreakPointValue({xs: 128, md: 256});
 	const bf = useBreakPointValue({xs: 2, md: 4});
@@ -52,14 +50,6 @@ export const VerticalList: FC<{title: string, group: SearchResultGroup<AutoItem>
 		setWidth(ref.current.clientWidth);
 	}, [setWidth]);
 
-
-	const nonPlayableClick = useCallback(async (item: ResultItem) => {
-		if(!device_id) {
-			setToast({open: true, autoHideDuration: 3e3, title: "The player is not currently available", severity: "error"})
-			return;
-		}
-		setDetails({...item, device_id});
-	}, [device_id, setToast, setDetails]);
 
 	useEffect(()=>{
 		if(!ref.current) return;

@@ -1,34 +1,33 @@
-import { FC, useCallback, useMemo } from "react";
-import { TrackItem } from './types';
-import { useAsync } from "../../hooks";
-import { HydradedAlbumResult, TrackResult } from "../common.types";
-import { addToQueue, getItem, play } from "../../utils/api";
-import { Button, CircularProgress, DialogContent, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
-import { Img } from "../ImageSlider";
-import { Add, MusicNote, PlayArrow } from "@mui/icons-material";
-import { DetailsList, Fx, Image, T, Title } from "./common.ui";
-import { dx } from "../../utils/dx";
+import { MusicNote } from "@mui/icons-material";
+import { Button, DialogContent, Stack } from "@mui/material";
+import { FC, useCallback } from "react";
 import { FaSpotify } from "react-icons/fa";
-import { TrackTable } from "./TrackTable";
-import { PlayButton } from "../PlayButton";
-import { DetailHeader } from "./DetailHeader";
-import { TconButton } from "../TconButton";
+import { useSpoty } from "../../Spoty/SpotyContext";
+import { useAsync } from "../../hooks";
+import { getItem } from "../../utils/api";
+import { dx } from "../../utils/dx";
 import { EnqueueButton } from "../EnqueueButton";
+import { PlayButton } from "../PlayButton";
+import { HydradedAlbumResult } from "../common.types";
+import { DetailHeader } from "./DetailHeader";
+import { TrackTable } from "./TrackTable";
+import { Fx, T } from "./common.ui";
+import { TrackItem } from './types';
 
 
-export const TrackDetail: FC<TrackItem> = ({device_id, name, duration_ms, album, artists, track_number, external_urls, uri, ...rest}) => {
+export const TrackDetail: FC<TrackItem> = ({name, duration_ms, album, artists, track_number, external_urls, uri, ...rest}) => {
 	const [isLoadingAlbumnInfo,, albumInfo] = useAsync<HydradedAlbumResult>(useCallback(async () => {
 		const a =  await getItem('album', album.id);
 		return a;
 	}, [album.id]))
-
+	const { isLocal } = useSpoty();
 	return (<>
 	<DetailHeader name={name} images={album.images}>
-		<Fx row>
+		{isLocal && <Fx row>
 			<EnqueueButton uris={[uri]}/>
 			<PlayButton contextUri={album.uri} offset={({uri})}/>
-		</Fx>
-		<T>{name} {dx(duration_ms*10)}</T>
+		</Fx>}
+		<T>{name} {dx(duration_ms)}</T>
 		<T>{album.name}</T>
 		<T>{artists.map(a=>a.name).join(', ')}</T>
 		<T><MusicNote/>{track_number}/{album.total_tracks}</T>

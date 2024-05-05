@@ -1,19 +1,20 @@
 import { FC } from "react";
 import { AudiobookItem } from "./types";
-import { Clx, CopyRight, DetailsList, Fx, Image, Markets, T, Title } from "./common.ui";
-import { DialogContent, Stack, Typography } from "@mui/material";
+import { Clx, CopyRight, Fx, Markets, T } from "./common.ui";
+import { DialogContent } from "@mui/material";
 import { ChapterTable } from "./ChapterTable";
 import { redate } from "../../utils/strings";
 import { DetailHeader } from "./DetailHeader";
 import { PlayButton } from "../PlayButton";
-import { EnqueueButton } from "../EnqueueButton";
+import { useSpoty } from "../../Spoty/SpotyContext";
 
 export const AudiobookDetail: FC<AudiobookItem> = ({images, name, authors, description, narrators, total_chapters, available_markets, chapters, uri, copyrights, ...rest}) => {
+	const { isLocal } = useSpoty();
 	return (<>
 	<DetailHeader {...{images,name}}>
-		<Fx row>
+		{isLocal && <Fx row>
 			<PlayButton contextUri={uri}/>
-		</Fx>
+		</Fx>}
 		<T>{name} {redate(chapters.items[0].release_date)}</T>
 		<T><b>Author{authors.length > 1 ? 's':''}</b> {authors.map(a=>a.name).join(', ')}</T>
 		<T><b>Narrator{narrators.length > 1 ? 's':''}</b> {narrators.map(n=>n.name).join(', ')}</T>

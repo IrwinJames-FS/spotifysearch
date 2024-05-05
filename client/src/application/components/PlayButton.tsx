@@ -20,7 +20,7 @@ export type PlayButtonProps = {
  * @returns 
  */
 export const PlayButton: FC<PlayButtonProps> = ({placement, contextUri:context_uri, uris, offset}) => {
-	const { play, pause, state } = useSpoty();
+	const { play, pause, state, product } = useSpoty();
 	const isPlaying = useMemo(()=>{
 		if(!state?.is_playing) return false;
 		if((!uris && !offset) && context_uri && context_uri === state!.context?.uri) return true;
@@ -34,6 +34,7 @@ export const PlayButton: FC<PlayButtonProps> = ({placement, contextUri:context_u
 	const pauseNow = useCallback(()=>{
 		pause()
 	}, [pause]);
+	if(product !== 'premium') return null
 	return isPlaying ? 
 	<TconButton title={!state?.is_playing ? "Play":"Pause"} placement={placement} onClick={pauseNow}><PlayingIcon paused={!state?.is_playing}/></TconButton>:
 	<TconButton title={"Play"} onClick={playNow} placement={placement}><PlayArrow/></TconButton>

@@ -2,12 +2,14 @@ import { Add } from "@mui/icons-material"
 import { TconButton } from "./TconButton"
 import { FC, useCallback } from "react"
 import { addToQueue } from "../utils/api"
+import { useSpoty } from "../Spoty/SpotyContext"
 
 export type EnqueueButtonProps = {
 	placement?:  "bottom" | "left" | "right" | "top" | "bottom-end" | "bottom-start" | "left-end" | "left-start" | "right-end" | "right-start" | "top-end" | "top-start"
 	uris: string | string[]
 }
 export const EnqueueButton: FC<EnqueueButtonProps> = ({placement, uris}) => {
+	const { product } = useSpoty();
 	const device_id = undefined
 	const onClick = useCallback(async () => {
 		const uis: string[] = Array.isArray(uris) ? uris:[uris];
@@ -20,5 +22,6 @@ export const EnqueueButton: FC<EnqueueButtonProps> = ({placement, uris}) => {
 			console.log("Display a toast");
 		}
 	}, [uris])
+	if (product !== 'premium') return null;
 	return <TconButton title="Add to queue" placement={placement} onClick={onClick} disabled={!device_id}><Add/></TconButton>
 }
