@@ -31,7 +31,7 @@ type PlayOptions = {
 		position?: number
 	}
 }
-export const playIt = (device_id: string, options: PlayOptions) => axios.put(bl`/spot/me/player/play?${qs.stringify({device_id})}`, options).then(r=>r.data);
+export const playIt = (device_id: string, options: PlayOptions) => axios.put(bl`/spot/me/player/play?${qs.stringify({device_id})}`, options, {withCredentials:true}).then(r=>r.data);
 
 export const transfer = (device_id: string) => axios.put(`${BASE_URL}/spot/me/player`, {
 	device_ids:[device_id],
@@ -45,3 +45,5 @@ export const getItem = (type: string, id: string) => axios.get(bl`/spot/${type}s
 export const addToQueue = (uri: string, device_id: string) => axios.post(bl`/spot/me/player/queue?${qs.stringify({uri, device_id})}`, {} , {withCredentials:true}).then(r=>r.data);
 
 export const getQueue = () => axios.get(bl`/spot/me/player/queue`, {withCredentials: true}).then(r=>r.data);
+
+export const getAccessToken = () => axios.get(bl`/auth/knox`, {withCredentials: true}).then(r=>r.data);

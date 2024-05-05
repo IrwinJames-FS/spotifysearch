@@ -8,11 +8,12 @@ import { useBool } from "../../hooks/useBool";
 import { useMemo } from "react";
 
 export const PlayerWidget = () => {
-	const {playerState:state, player} = useSpotifyPlayer();
+	const {playerState:state, player, device_id, error} = useSpotifyPlayer();
 	const [open, toggleQueue] = useBool();
 	const [ex, toggleExpanded] = useBool(true);
 	const isSm = useMediaQuery<Theme>(theme=>theme.breakpoints.down('sm'));
 	const expanded = useMemo(()=>!isSm && ex, [ex, isSm]);
+	if(error || !device_id) return null; //nothing to see here
 	return (<>
 	<WidgetQueue {...{open, expanded}}/>
 	<PlayerCard>

@@ -4,7 +4,7 @@ import { FC, useEffect, useRef, useState } from "react"
 type ColKey = [number]
 type PlayIconProps = {paused?: boolean}
 export const PlayingIcon: FC<PlayIconProps> = ({paused=false}) => {
-	const [cols, setCols] = useState<ColKey[]>([]);
+	const [cols, setCols] = useState<ColKey[]>(new Array(3).fill(null).map((_, i)=>[Math.floor((Math.random()*47)+1)]));
 	const timer = useRef<NodeJS.Timeout | undefined>()
 	const velocity = 2e2;
 	useEffect(()=>{

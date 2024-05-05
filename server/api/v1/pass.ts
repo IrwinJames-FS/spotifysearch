@@ -10,10 +10,8 @@ router.get('/', async (req, res, next) => {
 	const { uri } = req.query;
 	if(!uri) return res.status(400).json({message: 'No uri was provided'})
 	try {
-	console.log("Loading more");
 		const user = req.user as UserDocument;
 		const data = await axios.get(uri as string, authToken(user.accessToken)).then(r=>r.data);
-		console.log(data);
 		return res.status(200).json(data);
 	} catch (error) {
 		console.log(error);

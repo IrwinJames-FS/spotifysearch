@@ -8,6 +8,7 @@ const router = Router();
 router.use('/auth', Auth);
 
 //This is kind of like a pass through router to give more front end access to the api
-router.use('/spot', passport.session(), Spot)
+router.use('/spot', passport.session(), Spot);
 router.use('/pass', passport.session(), Pass);
+
 export default router;

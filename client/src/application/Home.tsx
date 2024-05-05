@@ -1,4 +1,4 @@
-import { Error } from "@mui/icons-material";
+import { Error, Login, Search } from "@mui/icons-material";
 import { Toolbar, Typography, CircularProgress, Card, CardContent, Stack } from "@mui/material";
 import { useApplication } from "./Application";
 import { SearchField, Topbar, UserButton } from "./components";
@@ -44,6 +44,13 @@ export const Home = () => {
 			<UserButton/>
 		</Toolbar>
 	</Topbar>
+	{!user && <Flex component="main" fill center>
+		<Login/>
+		<Toolbar>
+			<Typography>Login to get started</Typography>
+			<UserButton/>
+		</Toolbar>
+	</Flex>}
 	{loading && <Flex component="main" fill center><CircularProgress/></Flex>}
 	{!loading && error && <Flex component="main" fill center>
 		<Card>
@@ -55,7 +62,11 @@ export const Home = () => {
 			</CardContent>
 		</Card>
 	</Flex>}
-	{keys && <Flex component="main" fill gap={1} sx={{p:1}}>
+	{!loading && !error && !keys && <Flex component="main" center fill gap={1} sx={{p:1}}>
+		<Search/>
+		<Typography>Tell me what you want to hear</Typography>
+	</Flex>}
+	{keys && keys.length && <Flex component="main" fill gap={1} sx={{p:1}}>
 		{keys.map((k, i)=><HorizontalList key={k} title={k} group={results![k]}/>)}
 	</Flex>}
 	</>)

@@ -1,10 +1,16 @@
-import { IconButton, IconButtonProps, Tooltip, TooltipProps } from "@mui/material";
+import { IconButton, IconButtonProps, Tooltip, TooltipProps, styled } from "@mui/material";
 import { FC } from "react";
 
 export const TconButton: FC<IconButtonProps & TooltipProps> = ({title, placement, ...props}) => {
 	return (<Tooltip {...{title, placement}}>
-		<span>
+		<Span>
 			<IconButton {...props}/>
-		</span>
+		</Span>
 	</Tooltip>)
 }
+
+const Span = styled("span")({
+	display: 'inline-flex',
+	flexGrow:0,
+	width: '3rem'
+})

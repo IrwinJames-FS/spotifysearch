@@ -1,6 +1,6 @@
 export const dx = (n: number) => {
 	const s = Math.floor(n/1e3) % 60;
-	const m = Math.floor(n/6e5) % 60;
+	const m = Math.floor(n/6e4) % 60;
 	const h = Math.floor(n/36e5);
 	let tm = [];
 	if(h) tm.push(px(h));

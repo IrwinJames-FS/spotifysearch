@@ -22,7 +22,7 @@ export const PlaylistDetail: FC<PlaylistItem> = ({name, description, images, tra
 	return (<>
 	<DetailHeader {...{images, name}}>
 		<Fx justifyStart>
-			<PlayButton contextUri={uri}/>
+			<PlayButton contextUri={uri} placement="top"/>
 		</Fx>
 		<T>{name} - {owner.display_name}</T>
 		{description && <Clx title="Description:">

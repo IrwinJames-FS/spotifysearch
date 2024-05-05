@@ -43,7 +43,16 @@ export const WidgetSeeker: FC<WidgetPlayerProps> = ({state, player}) => {
 			if (interval.current) clearInterval(interval.current);
 			interval.current = null;
 		}
-	}, [setValue, state.position, state.timestamp, state.paused])
+	}, [setValue, state.position, state.timestamp, state.paused]);
+
+	const updatePlayback = useCallback(()=>{
+		
+	},[]);
+	//handle unload events here... because it has the playback time. 
+	useEffect(()=>{
+		window.addEventListener('beforeunload', updatePlayback);
+		return ()=>window.removeEventListener('beforeunload', updatePlayback);
+	}, [updatePlayback])
 	return (<Flex row gap={2}>
 		<Typography>{dx(value)}</Typography>
 		<Slider value={value} sx={{minWidth: 128}} onChange={onChange} max={state.duration*10}/>

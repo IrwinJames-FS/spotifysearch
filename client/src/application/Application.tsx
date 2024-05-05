@@ -1,18 +1,41 @@
-import { Dispatch, SetStateAction, createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { Outlet, Search } from "react-router-dom";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef } from "react";
+import { Outlet } from "react-router-dom";
 import { useAppTheme, useAsync } from "./hooks";
-import { getSelf, refresh, search, signout } from "./utils/api";
+import { getAccessToken, getSelf, refresh } from "./utils/api";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { SearchResult } from "./components/common.types";
-import { Player } from "./components/Player";
 import { DetailContainer } from "./DetailContainer";
-import { PlayerWidget } from "./components/SpotifyPlayer/PlayerWidget";
-import { SpotifyPlayer, useSpotifyPlayer } from "./components/SpotifyPlayer";
+import { Spoty } from "./Spoty/Spoty";
+import { SpotyConfig } from "./Spoty/spoty.types";
+import { PlayerWidget } from "./components/PlayerWidget";
+
+type SpotifyUserProfile = {
+	country: string
+	display_name: string
+	email: string
+	explicit_content: {
+		filter_enabled: boolean
+		filter_locked: boolean
+	},
+	external_urls: {
+		spotify: string
+	},
+	followers: {
+		href: string | null
+		total: number
+	},
+	href: string
+	id: string
+	images: Spotify.Image[],
+	product: 'free' | 'premium'
+	type: string
+	uri: string
+}
+
 type AppUser = {
 	displayName: string
 	accessToken: string
 	expires: number
-}
+} & SpotifyUserProfile
 type AppContext = {
 	user?: AppUser,
 	loadingUser: boolean,
@@ -23,13 +46,13 @@ const ApplicationContext = createContext<AppContext>({loadingUser: true});
 export const useApplication = ()=>useContext(ApplicationContext);
 
 export const Application = () => {
-	const {setToken} = useSpotifyPlayer();
 	var timer = useRef<NodeJS.Timer | null>(null)
 	const theme = useAppTheme();
 	const [loadingUser, userError, user, setUser] = useAsync<AppUser>(useCallback(async ()=>{
 		try {
 			const {user} = await getSelf();
-			setToken(user.accessToken);
+			console.log(user);
+			//setToken(user.accessToken);
 			return user;
 		} catch (error) {
 			return undefined
@@ -48,20 +71,33 @@ export const Application = () => {
 			console.log("refreshing");
 			const {user} = await refresh();
 			setUser({loading: false, data:user});
-			setToken(user.accessToken);
+			//setToken(user.accessToken);
 			timer.current = null;
 			console.log('refreshing');
 		}, diff); //every 10 seconds
-	}, [user, setUser, setToken])
+	}, [user, setUser])
 	
+	const getToken = useCallback(async (): Promise<string>=>await getAccessToken(), [])
 	
+	const config = useMemo<SpotyConfig>(()=>{
+		console.log("Updating config", user);
+		return {
+			getToken,
+			product: user?.product,
+			base: 'http://localhost:3001/api/v1/spot',
+			playback: 'http://localhost:3001/api/v1/auth/update',
+		}
+	}, [getToken, user]);
+
 	return (<ApplicationContext.Provider value={{user, loadingUser, userError }}>
 		<ThemeProvider theme={theme}>
 			<CssBaseline/>
-			<DetailContainer>
-				<Outlet/>
-				<PlayerWidget/>
-			</DetailContainer>
+			<Spoty  {...{config}}>
+				<DetailContainer>
+					<Outlet/>
+					<PlayerWidget/>
+				</DetailContainer>
+			</Spoty>
 		</ThemeProvider>
 	</ApplicationContext.Provider>);
 }

@@ -17,6 +17,7 @@ export const WidgetInfo: FC<WidgetProps> = ({state, expanded}) => {
 	const onBlur = useCallback(()=>setVelocity(0), [setVelocity]);
 
 	const {setDetails} = useDetails();
+	
 	const onClick = useCallback(async ()=>{
 		if(!state?.context?.uri) return;
 		const context_id = state.context.uri;

@@ -66,21 +66,23 @@ export const SpotifyPlayer: FC<ParentElement> = memo(({children}) => {
 	//Error handlers
 	const onInitError = useCallback(({message}:Err)=>{
 		console.log("Init Error");
-		setError(new PlayerInitError(message))
+		setError(new PlayerInitError(message)); //This is a critical error usually due to browser support for required technologies.
 	}, [setError]);
 	const onAuthError = useCallback(({message}:Err)=>{
 		console.log("Auth Error");
-		setError(new PlayerAuthError(message))
+		setError(new PlayerAuthError(message)); //The user did not authenticate therefore should not have access to the player
 	}, [setError]);
 	const onAccountError = useCallback(({message}:Err)=>{
 		console.log("Account Error");
-		setError(new PlayerAccountError(message))
+		setError(new PlayerAccountError(message)); //This error means they do not have sufficient account access (i.e not premium so no point in presenting the player)
+		//setToast({open: true, autoHideDuration: 3e4, icon: <MuiError/>, primary: "Account Error", secondary: message, severity:'error'})
 	}, [setError]);
 	const onPlaybackError = useCallback(({message}:Err)=>{
 		console.log("Playback Error")
-		setError(new PlayerPlaybackError(message));
+		//setError(new PlayerPlaybackError(message)); this error should be considered temporary and not hide the player
 		setToast({open: true, autoHideDuration: 3e4, icon: <MuiError/>, primary: "Playback Error", secondary: message, severity:'error'})
-	}, [setError]);
+	}, [setToast]);
+
 	//Watch for spotifies ready status
 	useEffect(()=>{
 		scripter("https://sdk.scdn.co/spotify-player.js", "spotify-player");
@@ -117,13 +119,26 @@ export const SpotifyPlayer: FC<ParentElement> = memo(({children}) => {
 			player.removeListener('playback_error', onPlaybackError);
 			player.removeListener('player_state_changed', onStateChange);
 		}
-	}, [token, sdkReady, setPlayer, onReady, onNotReady, onInitError, onAuthError, onAccountError, onPlaybackError, onStateChange]);
+	}, [token, sdkReady, setPlayer, onReady, onNotReady, onInitError, onAuthError, onAccountError, onPlaybackError, onStateChange, setDeviceId]);
 
-	return (<SpotifyPlayerContext.Provider value={{sdkReady, status, device_id, player, playerState, queue, setToken, updateQueue}}>
+	/**
+	 * This will manually seek to the current playback position if one exists
+	 */
+	const updatePlayback = useCallback((e:BeforeUnloadEvent)=>{
+		e.preventDefault();
+		console.log(playerState);
+	}, [playerState])
+	//This use effect method will be an attempt to just update the playback state on refresh
+	useEffect(()=>{
+		window.addEventListener('beforeunload', updatePlayback)
+		return ()=>window.removeEventListener('beforeunload', updatePlayback);
+	}, [updatePlayback])
+	return (<SpotifyPlayerContext.Provider value={{sdkReady, status, device_id, player, playerState, queue, error, setToken, updateQueue}}>
 		<Outlet/>
 		<Toast {...toastProps} onClose={closeToast}/>
 	</SpotifyPlayerContext.Provider>);
 }, ()=>true);
+
 SpotifyPlayer.displayName = 'SpotifyPlayer';
 
 type ToastProps = SnackbarProps & AlertProps & {primary?: string, secondary?:string }

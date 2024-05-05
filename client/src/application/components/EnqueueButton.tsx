@@ -1,7 +1,6 @@
 import { Add } from "@mui/icons-material"
 import { TconButton } from "./TconButton"
 import { FC, useCallback } from "react"
-import { useSpotifyPlayer } from "./SpotifyPlayer"
 import { addToQueue } from "../utils/api"
 
 export type EnqueueButtonProps = {
@@ -9,17 +8,17 @@ export type EnqueueButtonProps = {
 	uris: string | string[]
 }
 export const EnqueueButton: FC<EnqueueButtonProps> = ({placement, uris}) => {
-	const { device_id, updateQueue } = useSpotifyPlayer();
+	const device_id = undefined
 	const onClick = useCallback(async () => {
 		const uis: string[] = Array.isArray(uris) ? uris:[uris];
 		try{
 			for (let uri of uis) {
 				await addToQueue(uri, device_id!)
 			}
-			await updateQueue();
+			//await updateQueue();
 		} catch (error) {
 			console.log("Display a toast");
 		}
-	}, [uris, device_id, updateQueue])
+	}, [uris])
 	return <TconButton title="Add to queue" placement={placement} onClick={onClick} disabled={!device_id}><Add/></TconButton>
 }

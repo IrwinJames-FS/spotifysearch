@@ -1,4 +1,4 @@
-import { Error } from "@mui/icons-material";
+import { Error, Login, Search as MuiSearch } from "@mui/icons-material";
 import { Toolbar, Typography, Button, CircularProgress, Card, CardContent, Stack, capitalize } from "@mui/material";
 import { useApplication } from "./Application";
 import { SearchField, Topbar, UserButton } from "./components";
@@ -43,6 +43,17 @@ export const Search = () => {
 			<UserButton/>
 		</Toolbar>
 	</Topbar>
+	{!user && <Flex component="main" fill center>
+		<Login/>
+		<Toolbar>
+			<Typography>Login to get started</Typography>
+			<UserButton/>
+		</Toolbar>
+	</Flex>}
+	{!loading && !error && !results && <Flex component="main" center fill gap={1} sx={{p:1}}>
+		<MuiSearch/>
+		<Typography>Tell me what you want to hear</Typography>
+	</Flex>}
 	{loading && <Flex component="main" fill center><CircularProgress/></Flex>}
 	{!loading && error && <Flex component="main" fill center>
 		<Card>
@@ -54,6 +65,7 @@ export const Search = () => {
 			</CardContent>
 		</Card>
 	</Flex>}
+	
 	{!loading && !error && results && t in results && <VerticalList group={results[t as keyof SearchResult]} title={t}/>}
 	</>)
 }

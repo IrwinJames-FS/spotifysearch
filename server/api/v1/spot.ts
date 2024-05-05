@@ -1,18 +1,22 @@
 import { Router } from 'express';
 import { ApiError } from '../../errors';
 import { AxiosError } from 'axios';
-import { ax } from '../../Spotify/requests';
+import { ax, bl } from '../../Spotify/requests';
 import { UserDocument } from '../../models/User';
+import qs from 'qs';
+import http from "http";
+import https from "https";
 
 const router = Router();
 
 router.get('/*', async (req, res, next) => {
 	const ex = (req.params as Record<string,string>)['0']
 	const query = Object.keys(req.query).length ? req.query:undefined
+	console.log(ex);
 	if(!ex) return next(new ApiError('Invalid params provided', 422));
 	if(!req.user) return res.status(500).json({message:"Something went wrong please try again"}) //sometimes a non authenticated user slips through if rapid login logout attempts are made this shouldnt be necessary in the wild but If I managed to break it someone else will too.
 	try {
-		const data = await ax.get('/'+ex, (req.user! as UserDocument).accessToken, query)
+		const data = await ax((req.user! as UserDocument).accessToken).get(bl`/${ex}${query}`);
 		return res.status(200).json(data);
 	} catch (error) {
 		const e = error as AxiosError
@@ -24,11 +28,11 @@ router.get('/*', async (req, res, next) => {
 router.post('/*', async (req, res, next) => {
 	const ex = (req.params as Record<string,string>)['0']
 	const query = Object.keys(req.query).length ? req.query:undefined;
-	const body = req.body;
+	const {keepAlive, ...body} = req.body;
 	if(!req.user) return res.status(500).json({message:"Something went wrong please try again"})
 	if(!ex) return next(new ApiError('Invalid params provided', 422));
 	try {
-		const data = await ax.post('/'+ex, (req.user! as UserDocument).accessToken, query, body)
+		const data = await ax((req.user! as UserDocument).accessToken).post(bl`/${ex}${query}`, body);
 		return res.status(200).json(data);
 	} catch (error) {
 		const e = error as AxiosError
@@ -40,11 +44,14 @@ router.post('/*', async (req, res, next) => {
 router.put('/*', async (req, res, next) => {
 	const ex = (req.params as Record<string,string>)['0']
 	const query = Object.keys(req.query).length ? req.query:undefined;
-	const body = req.body;
+	const {keepAlive, ...body} = req.body;
+
 	if(!req.user) return res.status(500).json({message:"Something went wrong please try again"})
 	if(!ex) return next(new ApiError('Invalid params provided', 422));
 	try {
-		const data = await ax.put('/'+ex, (req.user! as UserDocument).accessToken, query, body)
+		if (ex.includes('/seek')) console.log('Seeking')
+		const data = await ax((req.user! as UserDocument).accessToken).put(bl`/${ex}${query}`, body, !!keepAlive ? {httpAgent:new http.Agent({keepAlive: true}), httpsAgent: new https.Agent({keepAlive: true})}:undefined);
+		if (ex.includes('/seek')) console.log('Seeked')
 		return res.status(200).json(data);
 	} catch (error) {
 		const e = error as AxiosError

@@ -21,7 +21,11 @@ db.on('error', (error: unknown) =>redlg`[MONGO] Database Error: ${(error as Erro
 db.once('open', () => greenlg`[MONGO] Connection successfull`);
 
 app.set('trust proxy', 1);
-app.use(cors());
+const allowList = []
+app.use(cors({
+	credentials: true,
+	origin: ['http://localhost:3000', 'http://localhost:3001']
+}));
 app.use(cookieParser());
 app.use(express.json());
 app.use(passport.initialize());
@@ -47,6 +51,7 @@ interface ApiErrorType extends Error {
 	status?: number
 }
 app.use((error: ApiErrorType, request: Request, response:Response, next: NextFunction) => {
+	console.log("Got an error here", error)
 	return response.status(error.status ?? 500).json({message: error.message});
 });
 app.listen(PORT, ()=>greenlg`[express] Server is listening on port ${PORT}`)

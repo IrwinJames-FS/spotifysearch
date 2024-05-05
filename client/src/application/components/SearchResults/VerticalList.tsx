@@ -42,7 +42,6 @@ export const VerticalList: FC<{title: string, group: SearchResultGroup<AutoItem>
 		const tl = ref.current.scrollTop+ref.current.clientHeight;
 		const ttl = ref.current.scrollHeight-loadOffset;
 		if(tl >= ttl) {
-			console.log("fetching next");
 			await next(grp.next);
 		}
 	}, [loadOffset, loading, grp, next, updatePointers]);
@@ -75,7 +74,7 @@ export const VerticalList: FC<{title: string, group: SearchResultGroup<AutoItem>
 	}, [width, onScroll]);
 
 	const data = useMemo(()=>{
-		return [... new Array(start).fill(undefined), ...grp.items.slice(start, end), ...new Array(grp.items.length > end ? grp.items.length-end:0).fill(undefined)]
+		return [... new Array(start).fill(undefined), ...grp.items.slice(start, end), ...new Array(loading ? 20:grp.items.length > end ? grp.items.length-end:0).fill(undefined)]
 	}, [grp, start, end])
 	return (<Box>
 	<Card sx={{mb:1}}>

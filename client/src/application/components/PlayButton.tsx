@@ -1,10 +1,9 @@
 import { FC, useCallback, useMemo } from "react";
 import { TconButton } from "./TconButton";
 import { playIt } from "../utils/api";
-import { useSpotifyPlayer } from "./SpotifyPlayer";
-import { Pause, PlayArrow } from "@mui/icons-material";
-import { TooltipProps } from "@mui/material";
+import { PlayArrow } from "@mui/icons-material";
 import { PlayingIcon } from "./PlayingIcon";
+import { useSpoty } from "../Spoty/SpotyContext";
 
 export type PlayButtonProps = {
 	placement?:  "bottom" | "left" | "right" | "top" | "bottom-end" | "bottom-start" | "left-end" | "left-start" | "right-end" | "right-start" | "top-end" | "top-start"
@@ -21,22 +20,21 @@ export type PlayButtonProps = {
  * @returns 
  */
 export const PlayButton: FC<PlayButtonProps> = ({placement, contextUri:context_uri, uris, offset}) => {
-	const {device_id, playerState, player} = useSpotifyPlayer();
+	const { play, pause, state } = useSpoty();
 	const isPlaying = useMemo(()=>{
-		if(!playerState?.track_window.current_track.uri) return false;
-		if((!uris && !offset) && context_uri && context_uri === playerState.context.uri) return true;
-		return offset?.uri === playerState?.track_window.current_track.uri
-	}, [playerState, context_uri, offset, uris]);
+		if(!state?.is_playing) return false;
+		if((!uris && !offset) && context_uri && context_uri === state!.context?.uri) return true;
+		return offset?.uri === state!.item?.uri;
+	}, [context_uri, offset, uris, state]);
 	
 	const playNow = useCallback(()=>{
-		if(isPlaying) return player?.togglePlay();
-		playIt(device_id!, {context_uri, uris, offset});
-	}, [context_uri, uris, offset, device_id, player, isPlaying]);
+		//if(isPlaying) return player?.togglePlay();
+		play({context_uri, uris, offset});
+	}, [context_uri, uris, offset, play]);
 	const pauseNow = useCallback(()=>{
-		//assumes its playing
-		return player?.togglePlay();
-	}, [player])
+		pause()
+	}, [pause]);
 	return isPlaying ? 
-	<TconButton title={playerState?.paused ? "Play":"Pause"} placement={placement} onClick={pauseNow}><PlayingIcon paused={playerState?.paused}/></TconButton>:
-	<TconButton title="Play Now" onClick={playNow} disabled={!device_id} placement={placement}><PlayArrow/></TconButton>
+	<TconButton title={!state?.is_playing ? "Play":"Pause"} placement={placement} onClick={pauseNow}><PlayingIcon paused={!state?.is_playing}/></TconButton>:
+	<TconButton title={"Play"} onClick={playNow} placement={placement}><PlayArrow/></TconButton>
 }

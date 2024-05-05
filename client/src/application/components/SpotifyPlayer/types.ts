@@ -8,6 +8,7 @@ export type SpotifyPlayerContextState = {
 	player?: Spotify.Player
 	playerState?: Spotify.PlaybackState
 	queue?: SpotifyQueue
+	error?: Error
 }
 
 export type SpotifyPlayerContextMethods = {
