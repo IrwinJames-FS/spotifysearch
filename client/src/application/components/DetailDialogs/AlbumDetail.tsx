@@ -7,13 +7,13 @@ import { DetailHeader } from "./DetailHeader";
 import { EnqueueButton } from "../EnqueueButton";
 import { TconButton } from "../TconButton";
 import { FaMinus } from "react-icons/fa";
-import { DialogContent } from "@mui/material";
-
+import { DialogContent, Stack } from "@mui/material";
 import { redate } from "../../utils/strings";
 import { Audiotrack, Favorite } from "@mui/icons-material";
 import { useSpoty } from "../../Spoty/SpotyContext";
+import { SpotifyButton } from "../SpotifyButton";
 
-export const AlbumDetail: FC<AlbumItem> = ({name, images, total_tracks, id, tracks, uri, release_date, artists, available_markets, copyrights, popularity,  ...rest}) => {
+export const AlbumDetail: FC<AlbumItem> = ({name, images, total_tracks, id, tracks, uri, release_date, artists, available_markets, copyrights, popularity, external_urls}) => {
 	const {isLocal} = useSpoty();
 	return (<>
 	<DetailHeader {...{name, images}}>
@@ -32,6 +32,9 @@ export const AlbumDetail: FC<AlbumItem> = ({name, images, total_tracks, id, trac
 		</Clx>
 	</DetailHeader>
 	<DialogContent>
+		<Stack sx={{py:3}} direction="row">
+			<SpotifyButton external_urls={external_urls}/>
+		</Stack>
 		<TrackTable tracks={tracks.items} context={uri} length={total_tracks}/>
 	</DialogContent>
 	</>)

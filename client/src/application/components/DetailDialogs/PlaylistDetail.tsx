@@ -1,6 +1,6 @@
 import { FC, useCallback } from "react";
 import { PlaylistItem } from "./types";
-import { DialogContent } from "@mui/material";
+import { DialogContent, Stack } from "@mui/material";
 import { Clx, Fx, T } from "./common.ui";
 import { useAsync } from "../../hooks";
 import { forwardUri } from "../../utils/api";
@@ -9,10 +9,11 @@ import { TrackTable } from "./TrackTable";
 import { DetailHeader } from "./DetailHeader";
 import { PlayButton } from "../PlayButton";
 import { useSpoty } from "../../Spoty/SpotyContext";
+import { SpotifyButton } from "../SpotifyButton";
 type PlaylistTrackItem = {
 	track: TrackResult
 }
-export const PlaylistDetail: FC<PlaylistItem> = ({name, description, images, tracks, owner, uri, ...rest}) => {
+export const PlaylistDetail: FC<PlaylistItem> = ({name, description, images, tracks, owner, uri, external_urls }) => {
 	const [,, hydratedTracks] = useAsync<TrackResult[] | undefined>(useCallback(async ()=>{
 		if(!tracks.href) return undefined;
 		const trks = await forwardUri(tracks.href) as SearchResultGroup<PlaylistTrackItem>
@@ -30,6 +31,9 @@ export const PlaylistDetail: FC<PlaylistItem> = ({name, description, images, tra
 		</Clx>}
 	</DetailHeader>
 	<DialogContent>
+		<Stack sx={{py:3}} direction="row">
+			<SpotifyButton external_urls={external_urls}/>
+		</Stack>
 		<TrackTable tracks={hydratedTracks} context={uri} length={tracks.total}/>
 	</DialogContent>
 	</>);

@@ -1,8 +1,6 @@
 import { FC, ReactNode } from "react";
-import { ResultItem } from "../common.types";
 import { DetailsList, Title } from "./common.ui";
-import { useBreakPointValue } from "../../hooks/useBreakPoint";
-import { Image, ImageSizeKey } from "../Image";
+import { Image } from "../Image";
 
 type DetailHeaderProps = {
 	name: string

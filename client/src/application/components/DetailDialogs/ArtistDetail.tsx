@@ -4,8 +4,10 @@ import { DetailsList, Fx, Image, T, Title } from "./common.ui";
 import { commafy } from "../../utils/strings";
 import { PlayButton } from "../PlayButton";
 import { useSpoty } from "../../Spoty/SpotyContext";
+import { DialogContent, Stack } from "@mui/material";
+import { SpotifyButton } from "../SpotifyButton";
 
-export const ArtistDetail: FC<ArtistItem> = ({images, name, followers, genres, popularity, uri}) => {
+export const ArtistDetail: FC<ArtistItem> = ({images, name, followers, genres, popularity, uri, external_urls}) => {
 	//The api says it accept artists as context_uris however there is little to no documentation on how that works. Therefore I am not sure if this will do anything
 	const { isLocal } = useSpoty();
 	return (<>
@@ -21,5 +23,10 @@ export const ArtistDetail: FC<ArtistItem> = ({images, name, followers, genres, p
 			<T><b>Genres</b> {genres.join(', ')}</T>
 		</DetailsList>
 	</Title>
+	<DialogContent>
+		<Stack sx={{py:3}} direction="row">
+			<SpotifyButton external_urls={external_urls}/>
+		</Stack>
+	</DialogContent>
 	</>)
 }

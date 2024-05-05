@@ -1,5 +1,5 @@
-import { CardActionArea, Collapse, DialogTitle, DialogTitleProps, Skeleton, Stack, StyledComponentProps, TableCell, Typography, TypographyProps } from "@mui/material";
-import { FC, MouseEventHandler, ReactNode, useCallback, useEffect, useRef } from "react";
+import { CardActionArea, Collapse, DialogTitle, DialogTitleProps, Skeleton, Stack, StyledComponentProps, TableCell, Typography } from "@mui/material";
+import { FC, ReactNode, useEffect, useRef } from "react";
 import { Img } from "../ImageSlider";
 import { useImages } from "../../hooks/useImages";
 import { Flex } from "../Flex";
