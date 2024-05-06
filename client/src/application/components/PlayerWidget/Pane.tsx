@@ -2,6 +2,7 @@ import { Card, styled } from "@mui/material";
 
 export const Pane = styled(Card, {shouldForwardProp: prop=>!(['left', 'bottom', 'visible'] as PropertyKey[]).includes(prop)})<{left?:number, bottom?:number, visible:boolean}>(({theme, left=16, bottom=16, visible})=>({
 	backdropFilter: 'blur(8px)',
+	backgroundColor: theme.palette.overlays[900],
 	position: 'fixed',
 	left,
 	bottom,

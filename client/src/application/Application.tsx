@@ -66,21 +66,18 @@ export const Application = () => {
 		}
 		if(!user) return
 		//calculate the time until expiration
-		const diff = user.expires-Date.now()-1e3;
+		const diff = user.expires-Date.now()-6e4; //1 minute before expiration
 		timer.current = setTimeout(async () => {
-			console.log("refreshing");
 			const {user} = await refresh();
 			setUser({loading: false, data:user});
 			//setToken(user.accessToken);
 			timer.current = null;
-			console.log('refreshing');
-		}, diff); //every 10 seconds
+		}, diff);
 	}, [user, setUser])
 	
 	const getToken = useCallback(async (): Promise<string>=>await getAccessToken(), [])
 	
 	const config = useMemo<SpotyConfig>(()=>{
-		console.log("Updating config", user);
 		return {
 			getToken,
 			product: user?.product,

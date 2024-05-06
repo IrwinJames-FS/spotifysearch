@@ -54,7 +54,7 @@ export const PlayerWidget = () => {
 }
 
 const ShowButton: FC<{visible?: boolean, onClick?: MouseEventHandler}> = ({visible, onClick}) => {
-	return <ShowButtonContainer visible={visible ?? false}><TconButton title="Show Player" placement="top-end" onClick={onClick} sx={{position:'absolute', top:0, right:0, bgcolor:'overlays.900'}}><MusicNote/></TconButton></ShowButtonContainer>
+	return <ShowButtonContainer visible={visible ?? false}><TconButton title="Show Player" placement="top-end" onClick={onClick} sx={{position:'absolute', top:0, right:0, bgcolor:'overlays.900', backdropFilter:'blur(8px)'}}><MusicNote/></TconButton></ShowButtonContainer>
 }
 
 const ShowButtonContainer = styled(Box, {shouldForwardProp: prop=>prop !== 'visible'})<{visible:boolean}>(({theme, visible})=>({

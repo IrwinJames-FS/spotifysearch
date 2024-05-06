@@ -12,23 +12,6 @@ import { ax, bl, bnl } from "../../Spotify/requests";
 dotenv.config();
 
 //this is a horrible method of making delayed actions because in the wild this would not differenciate requests but in this environment it is logical the next request would be from the same user.
-var requestQueue: [string, string][] = [];
-
-export const dequeue = async (req:Request, res:Response, next:NextFunction) => {
-	console.log("Got ", requestQueue.length, "To Clear");
-	for (let i = 0; i<requestQueue.length; i++){
-		try{ 
-			console.log("Requesting ", requestQueue[i][0])
-			await axios.put(requestQueue[i][0], {}, {headers: {Authorization: requestQueue[i][1]}})
-			console.log("Req");
-		} catch (error) {
-			console.log("Got an error in dqueu", (error as AxiosError).response?.data);
-			continue
-		}
-	}
-	requestQueue = []
-	return next();
-}
 export const refresher = async (req: Request, res: Response, next: NextFunction) => {
 	let user = req.user as UserObject | undefined
 	if(!("passport" in req.session)) return next();
@@ -37,12 +20,10 @@ export const refresher = async (req: Request, res: Response, next: NextFunction)
 		user = pass.user
 	}
 	if(!user) return next();
-	console.log("Got user");
 	const session = req.session as Session
 	if(!session?.passport?.user) return next();
-	console.log("Got session");
 	const expires = user.expires;
-	if (expires > Date.now()) return next();
+	if (expires-6e4 > Date.now()) return next(); //if expires within a minute
 	try {
 		const {data} = await axios.post('https://accounts.spotify.com/api/token', {
 			grant_type: 'refresh_token',
@@ -116,12 +97,11 @@ router.get('/signout', (req, res) => {
 });
 
 
-router.get('/self', dequeue, refresher, async (req, res) => {
+router.get('/self', refresher, async (req, res) => {
 	const user = (req.session as PassportSession)?.passport?.user;
 	//fetch Spotify UserProfile and append it to the exising message
 	if(!user) return res.status(200).json({user:null});
 	try {
-		console.log(user, new Date(user.expires).toUTCString())
 		const spotUser = await ax(user!.accessToken).get('/me');
 		return res.status(200).json({user:{displayName: user!.displayName, accessToken: user!.accessToken, expires: user!.expires, ...spotUser}}); //this should be hashed
 	} catch (error) {
@@ -153,13 +133,4 @@ router.use((error: ApiError, req: Request, res: Response, next: NextFunction) =>
 	res.redirect(302, referrer);
 })
 
-router.put('/update', async (req, res, next)=>{
-	const bear = req.header("Authorization");
-	const query = Object.keys(req.query).length ? req.query:undefined;
-	if(!bear) return res.status(500).json({message:"Something went wrong please try again"});
-
-	requestQueue.push([bnl`/me/player/seek${query}`, bear])
-	
-	res.status(204).send();
-})
 export default router;

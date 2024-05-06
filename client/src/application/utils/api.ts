@@ -38,7 +38,7 @@ export const transfer = (device_id: string) => axios.put(`${BASE_URL}/spot/me/pl
 	play:true
 }, {withCredentials: true});
 
-export const refresh = () => axios.get(`${BASE_URL}/auth/refresh`, {withCredentials: true}).then(r=>r.data);
+export const refresh = () => axios.get(`${BASE_URL}/auth/self`, {withCredentials: true}).then(r=>r.data);
 
 export const getItem = (type: string, id: string) => axios.get(bl`/spot/${type}s/${id}`, {withCredentials:true}).then(r=>r.data);
 
